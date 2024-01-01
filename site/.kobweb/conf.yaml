@@ -10,5 +10,9 @@ server:
     prod:
       script: "build/dist/js/productionExecutable/multiplatform.js"
       siteRoot: ".kobweb/site"
-
+  cors:
+    hosts:
+      - name: "com.lintang.multiplatform"
+        schemes:
+          - "https"
   port: 8080

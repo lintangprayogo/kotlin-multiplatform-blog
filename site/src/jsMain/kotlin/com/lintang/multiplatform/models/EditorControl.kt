@@ -2,7 +2,7 @@ package com.lintang.multiplatform.models
 
 import com.lintang.multiplatform.util.Res
 
-enum class EditorKey(val icon: String) {
+enum class EditorControl(val icon: String) {
     Bold(icon = Res.Icon.bold),
     Italic(icon = Res.Icon.italic),
     Link(icon = Res.Icon.link),

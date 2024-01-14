@@ -1,5 +1,6 @@
 package com.lintang.multiplatform.util
 
+import com.lintang.multiplatform.models.Post
 import com.lintang.multiplatform.models.RandomJoke
 import com.lintang.multiplatform.models.User
 import com.lintang.multiplatform.models.UserWithoutPassword
@@ -39,6 +40,18 @@ suspend fun checkUserId(id: String): Boolean {
     }
 }
 
+suspend fun addPost(post: Post): Boolean {
+    return try {
+        window.api.tryPost(
+            apiPath = "addPost",
+            body = Json.encodeToString(post).encodeToByteArray()
+        )?.decodeToString().parseData<Boolean>()
+    } catch (e: Exception) {
+        println("error ${e.message}")
+        false
+    }
+}
+
 suspend fun getRandomJoke(onComplete: (RandomJoke) -> Unit) {
     val date = localStorage["date"]
     val result = if (date != null) {
@@ -57,6 +70,7 @@ suspend fun getRandomJoke(onComplete: (RandomJoke) -> Unit) {
             try {
                 localStorage["joke"].parseData<RandomJoke>()
             } catch (e: Exception) {
+                println("error ${e.message}")
                 RandomJoke(-1, e.message.toString())
             }
         }
@@ -67,6 +81,7 @@ suspend fun getRandomJoke(onComplete: (RandomJoke) -> Unit) {
             localStorage["joke"] = result
             result.parseData()
         } catch (e: Exception) {
+            println("error ${e.message}")
             RandomJoke(-1, e.message.toString())
         }
     }

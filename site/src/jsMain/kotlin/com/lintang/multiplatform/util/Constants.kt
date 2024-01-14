@@ -13,6 +13,17 @@ object Res {
         val logo = "/logo.svg"
         val laugh = "/laugh.png"
     }
+    object Icon {
+        const val bold = "/bold.svg"
+        const val italic = "/italic.svg"
+        const val link = "/link.svg"
+        const val title = "/title.svg"
+        const val subtitle = "/subtitle.svg"
+        const val quote = "/quote.svg"
+        const val code = "/code.svg"
+        const val image = "/image.svg"
+        const val checkmark = "/checkmark.svg"
+    }
 
     object PathIcon {
         const val home =

@@ -1,8 +1,11 @@
-package com.lintang.multiplatform.pages.admin.create
+package com.lintang.multiplatform.pages.admin.create_components
 
 import androidx.compose.runtime.Composable
 import com.lintang.multiplatform.models.Theme
 import com.lintang.multiplatform.util.Constants
+import com.lintang.multiplatform.util.Constants.FONT_FAMILY
+import com.lintang.multiplatform.util.Id
+import com.lintang.multiplatform.util.noBorder
 import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.file.loadDataUrlFromDisk
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
@@ -22,6 +25,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
 import com.varabyte.kobweb.compose.ui.modifiers.height
+import com.varabyte.kobweb.compose.ui.modifiers.id
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.outline
@@ -40,18 +44,19 @@ import org.jetbrains.compose.web.dom.Input
 fun ThumbnailUploader(
     thumbnail: String,
     thumbnailInputDisabled: Boolean,
-    onThumbnailClick: (String, String) -> Unit
+    onThumbnailSelect: (String, String) -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .margin(bottom = 20.px)
             .height(54.px),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Input(
             attrs = Modifier.fillMaxSize()
-
+                .id(Id.thumbnailInput)
                 .fillMaxSize()
                 .margin(right = 12.px)
                 .padding(leftRight = 20.px)
@@ -72,21 +77,22 @@ fun ThumbnailUploader(
             type = InputType.Text,
         )
         Button(
-            attrs = Modifier
+            attrs =   Modifier
                 .onClick {
-                    document.loadDataUrlFromDisk(accept = "image/png,img/jpeg",
+                    document.loadDataUrlFromDisk(
+                        accept = "image/png, image/jpeg",
                         onLoaded = {
-                            onThumbnailClick(filename, it)
-                        })
+                            onThumbnailSelect(filename, it)
+                        }
+                    )
                 }
                 .fillMaxHeight()
                 .padding(leftRight = 24.px)
                 .backgroundColor(if (!thumbnailInputDisabled) Theme.Gray.rgb else Theme.Primary.rgb)
                 .color(if (!thumbnailInputDisabled) Theme.DarkGray.rgb else Colors.White)
                 .borderRadius(r = 4.px)
-                .border(0.px, style = LineStyle.None, color = Colors.Transparent)
-                .outline(0.px, style = LineStyle.None, color = Colors.Transparent)
-                .fontFamily(Constants.FONT_FAMILY)
+                .noBorder()
+                .fontFamily(FONT_FAMILY)
                 .fontWeight(FontWeight.Medium)
                 .fontSize(14.px)
                 .thenIf(

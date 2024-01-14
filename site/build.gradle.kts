@@ -23,7 +23,15 @@ kobweb {
 
             head.add {
                 script {
-                    src = "https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+                    src = "/highlight.min.js"
+                }
+                link {
+                    rel = "stylesheet"
+                    href = "/github-dark.css"
+                }
+                script {
+                    src =
+                        "https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
                 }
                 link {
                     rel = "stylesheet"
@@ -42,7 +50,6 @@ kotlin {
             dependencies {
                 implementation(compose.runtime)
                 implementation(libs.kotlinx.serialization)
-
             }
         }
 

@@ -1,5 +1,6 @@
 package com.lintang.multiplatform.data
 
+import com.lintang.multiplatform.models.Post
 import com.lintang.multiplatform.models.User
 import com.lintang.multiplatform.utils.Constants
 import com.mongodb.client.model.Filters
@@ -23,6 +24,8 @@ class MongoDB(private val context: InitApiContext) : MongoRepository {
     private val client = MongoClient.create("mongodb://localhost:27017")
     private val database = client.getDatabase(Constants.DATABASE_NAME)
     private val userCollection = database.getCollection<User>("users")
+    private val postCollection = database.getCollection<Post>("posts")
+
     override suspend fun checkIfUserExist(user: User): User? {
         return try {
             userCollection
@@ -45,6 +48,15 @@ class MongoDB(private val context: InitApiContext) : MongoRepository {
         } catch (e: Exception) {
             context.logger.error(e.message.toString())
             false
+        }
+    }
+
+    override suspend fun addPost(post: Post): Boolean {
+        return try {
+            postCollection.insertOne(post).wasAcknowledged()
+        } catch (e: Exception) {
+            context.logger.error(e.message.toString())
+            return false
         }
     }
 }

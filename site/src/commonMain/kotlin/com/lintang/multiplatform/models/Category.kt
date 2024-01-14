@@ -1,4 +1,7 @@
 package com.lintang.multiplatform.models
 
-class expect {
+expect enum class Category {
+    Technology,
+    Programing,
+    Design,
 }

@@ -1,4 +1,4 @@
-package com.lintang.multiplatform.pages.admin.create
+package com.lintang.multiplatform.pages.admin.create_components
 
 import androidx.compose.runtime.Composable
 import com.lintang.multiplatform.models.Category

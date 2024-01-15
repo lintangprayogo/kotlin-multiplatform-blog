@@ -2,7 +2,7 @@ package com.lintang.multiplatform.models
 
 
 
-expect class Post {
+expect class PostWithoutDetails {
     val _id: String
     val author: String
     val date: Long
@@ -10,8 +10,5 @@ expect class Post {
     val subtitle: String
     val thumbnail: String
     val content: String
-    val category: Category
-    val isPopular: Boolean
-    val isMain: Boolean
-    val isSponsored: Boolean
+    val category: String
 }

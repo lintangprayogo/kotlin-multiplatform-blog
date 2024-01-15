@@ -1,14 +1,17 @@
 package com.lintang.multiplatform.data
 
 import com.lintang.multiplatform.models.Post
+import com.lintang.multiplatform.models.PostWithoutDetails
 import com.lintang.multiplatform.models.User
 import com.lintang.multiplatform.utils.Constants
 import com.mongodb.client.model.Filters
+import com.mongodb.client.model.Indexes.descending
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.varabyte.kobweb.api.data.add
 import com.varabyte.kobweb.api.init.InitApi
 import com.varabyte.kobweb.api.init.InitApiContext
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.toList
 
 
 @InitApi
@@ -58,5 +61,13 @@ class MongoDB(private val context: InitApiContext) : MongoRepository {
             context.logger.error(e.message.toString())
             return false
         }
+    }
+
+    override suspend fun getMyPosts(skip:Int,author:String):List<PostWithoutDetails>{
+        return  postCollection.withDocumentClass<PostWithoutDetails>()
+            .find(Filters.eq(PostWithoutDetails::author.name,author))
+            .sort(descending(PostWithoutDetails::author.name))
+            .skip(skip)
+            .toList()
     }
 }

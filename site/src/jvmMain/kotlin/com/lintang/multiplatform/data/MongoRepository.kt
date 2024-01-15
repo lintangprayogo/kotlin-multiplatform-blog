@@ -8,6 +8,5 @@ interface MongoRepository {
      suspend fun  checkIfUserExist(user: User):User?
      suspend fun checkUserId(id:String):Boolean
      suspend fun addPost(post:Post):Boolean
-
-     suspend fun getMyPost(skip:Int,author:String):List<PostWithoutDetails>
+     suspend fun getMyPosts(skip:Int,author:String):List<PostWithoutDetails>
 }

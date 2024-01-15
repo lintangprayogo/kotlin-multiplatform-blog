@@ -8,7 +8,7 @@ actual data class Post(
     actual val author: String,
     actual val date: Long,
     actual val title: String,
-    actual val subTitle: String,
+    actual val subtitle: String,
     actual val thumbnail: String,
     actual val content: String,
     actual val category: Category,

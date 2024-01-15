@@ -31,17 +31,20 @@ suspend fun AddPost(context: ApiContext) {
 
 }
 
-@Api(routeOverride = "getmypost")
+@Api(routeOverride = "getmyposts")
 suspend fun getMyPost(context: ApiContext) {
     try {
         val skip = context.req.params["skip"]?.toInt() ?: 0
-        val author = context.req.params["author"] ?: ""
-
-        val result = context.data.getValue<MongoDB>().getMyPost(skip = skip, author = author)
-
+        val author: String = context.req.params["author"] ?: ""
+        val result = context.data.getValue<MongoDB>().getMyPosts(skip, author)
         context.res.setBodyText(Json.encodeToString(ApiListResponse.Success(result)))
     } catch (e: Exception) {
-        val result = ApiListResponse.Error(e.message.toString())
-        context.res.setBodyText(Json.encodeToString(result))
+        context.res.setBodyText(
+            Json.encodeToString(
+                ApiListResponse.Error(
+                    e.message ?: "unknown error"
+                )
+            )
+        )
     }
 }

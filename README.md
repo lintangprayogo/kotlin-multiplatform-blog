@@ -1,3 +1,4 @@
+
 This is a [Kobweb](https://github.com/varabyte/kobweb) project bootstrapped with the `app/empty` template.
 
 This template is useful if you already know what you're doing and just want a clean slate. By default, it

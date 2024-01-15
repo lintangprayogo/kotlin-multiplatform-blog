@@ -64,7 +64,7 @@ fun ThumbnailUploader(
                 .borderRadius(r = 4.px)
                 .border(0.px, style = LineStyle.None, color = Colors.Transparent)
                 .outline(0.px, style = LineStyle.None, color = Colors.Transparent)
-                .fontFamily(Constants.FONT_FAMILY)
+                .fontFamily(FONT_FAMILY)
                 .fontSize(16.px)
                 .thenIf(
                     condition = thumbnailInputDisabled,

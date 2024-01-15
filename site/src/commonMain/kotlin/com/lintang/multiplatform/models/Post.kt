@@ -7,7 +7,7 @@ expect class Post {
     val author: String
     val date: Long
     val title: String
-    val subTitle: String
+    val subtitle: String
     val thumbnail: String
     val content: String
     val category: Category

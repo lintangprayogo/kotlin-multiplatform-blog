@@ -4,9 +4,8 @@ import com.lintang.multiplatform.models.Post
 import com.lintang.multiplatform.models.PostWithoutDetails
 import com.lintang.multiplatform.models.User
 import com.lintang.multiplatform.utils.Constants
-import com.lintang.multiplatform.utils.Constants.PAGE_PER_REQUEST
 import com.mongodb.client.model.Filters
-import com.mongodb.client.model.Sorts.descending
+import com.mongodb.client.model.Indexes.descending
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.varabyte.kobweb.api.data.add
 import com.varabyte.kobweb.api.init.InitApi
@@ -64,11 +63,10 @@ class MongoDB(private val context: InitApiContext) : MongoRepository {
         }
     }
 
-    override suspend fun getMyPost(skip: Int, author: String): List<PostWithoutDetails> {
-        return postCollection.withDocumentClass<PostWithoutDetails>().find(
-            Filters.eq(Post::author.name, author)
-            ).limit(PAGE_PER_REQUEST)
-            .sort(descending(PostWithoutDetails::date.name))
+    override suspend fun getMyPosts(skip:Int,author:String):List<PostWithoutDetails>{
+        return  postCollection.withDocumentClass<PostWithoutDetails>()
+            .find(Filters.eq(PostWithoutDetails::author.name,author))
+            .sort(descending(PostWithoutDetails::author.name))
             .skip(skip)
             .toList()
     }

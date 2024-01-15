@@ -1,5 +1,6 @@
 package com.lintang.multiplatform.util
 
+import com.lintang.multiplatform.models.ApiListResponse
 import com.lintang.multiplatform.models.Post
 import com.lintang.multiplatform.models.RandomJoke
 import com.lintang.multiplatform.models.User
@@ -43,7 +44,7 @@ suspend fun checkUserId(id: String): Boolean {
 suspend fun addPost(post: Post): Boolean {
     return try {
         window.api.tryPost(
-            apiPath = "addPost",
+            apiPath = "addpost",
             body = Json.encodeToString(post).encodeToByteArray()
         )?.decodeToString().parseData<Boolean>()
     } catch (e: Exception) {
@@ -87,6 +88,23 @@ suspend fun getRandomJoke(onComplete: (RandomJoke) -> Unit) {
     }
 
     onComplete(result)
+}
+
+suspend fun getMyPost(
+    skip: Int,
+    onSuccess: (response: ApiListResponse) -> Unit,
+    onError: (Exception) -> Unit
+) {
+
+    try {
+        val result = window.api.tryGet(
+            apiPath = "getmypost?skip=$skip&author=${localStorage["username"]}",
+
+        )?.decodeToString()?.parseData<ApiListResponse>() ?: ApiListResponse.Error("Not Found")
+        onSuccess(result)
+    } catch (e: Exception) {
+        onError(e)
+    }
 }
 
 inline fun <reified T> String?.parseData(): T {

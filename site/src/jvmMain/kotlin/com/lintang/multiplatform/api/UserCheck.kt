@@ -17,8 +17,6 @@ suspend fun userCheck(context: ApiContext) {
     try {
         val userRequest =
             context.req.body?.decodeToString()?.let {
-
-                println("DANCUK KOE")
                 Json.decodeFromString<User>(it) }
         val user = userRequest?.let {
             context.data.getValue<MongoDB>()

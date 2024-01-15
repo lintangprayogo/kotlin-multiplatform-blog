@@ -53,20 +53,6 @@ suspend fun addPost(post: Post): Boolean {
     }
 }
 
-suspend fun getMyPost(
-    skip: Int,
-    onSuccess: (response: ApiListResponse) -> Unit,
-    onError: (message: String) -> Unit
-) {
-    try {
-        val result = window.api.tryGet(
-            apiPath = "getmyposts?skip=${skip}&author=${localStorage["username"]}",
-        )?.decodeToString()?.parseData<ApiListResponse>() ?: ApiListResponse.Error("NULL")
-        onSuccess(result)
-    } catch (e: Exception) {
-        onError(e.message ?: "unknown erorr")
-    }
-}
 
 suspend fun getRandomJoke(onComplete: (RandomJoke) -> Unit) {
     val date = localStorage["date"]
@@ -103,6 +89,23 @@ suspend fun getRandomJoke(onComplete: (RandomJoke) -> Unit) {
     }
 
     onComplete(result)
+}
+
+suspend fun getMyPost(
+    skip: Int,
+    onSuccess: (response: ApiListResponse) -> Unit,
+    onError: (Exception) -> Unit
+) {
+
+    try {
+        val result = window.api.tryGet(
+            apiPath = "getmypost?skip=$skip&author=${localStorage["username"]}",
+
+        )?.decodeToString()?.parseData<ApiListResponse>() ?: ApiListResponse.Error("Not Found")
+        onSuccess(result)
+    } catch (e: Exception) {
+        onError(e)
+    }
 }
 
 inline fun <reified T> String?.parseData(): T {

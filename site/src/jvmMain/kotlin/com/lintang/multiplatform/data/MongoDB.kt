@@ -68,6 +68,7 @@ class MongoDB(private val context: InitApiContext) : MongoRepository {
             .find(Filters.eq(PostWithoutDetails::author.name,author))
             .sort(descending(PostWithoutDetails::author.name))
             .skip(skip)
+            .limit(8)
             .toList()
     }
 }

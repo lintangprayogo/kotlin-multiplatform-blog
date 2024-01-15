@@ -11,5 +11,5 @@ actual data class PostWithoutDetails(
     actual val subtitle: String,
     actual val thumbnail: String,
     actual val content: String,
-    actual val category: String,
+    actual val category: Category=Category.Technology,
 )

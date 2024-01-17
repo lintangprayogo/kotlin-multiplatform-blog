@@ -9,6 +9,7 @@ import androidx.compose.runtime.setValue
 import com.lintang.multiplatform.Screen
 import com.lintang.multiplatform.models.ControlStyle
 import com.lintang.multiplatform.models.EditorControl
+import com.lintang.multiplatform.models.PostWithoutDetails
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.border
@@ -123,6 +124,8 @@ fun applyControlStyle(control: EditorControl, onLinkClick: () -> Unit, onImageCl
 }
 
 fun Long.parseDateString() = Date(this).toLocaleDateString()
+
+fun  parsePostList(list: List<PostWithoutDetails>):String ="${list.size} Post Selected"
 
 fun logout() {
     localStorage["remember"] = false.toString()

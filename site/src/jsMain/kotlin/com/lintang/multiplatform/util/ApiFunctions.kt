@@ -99,8 +99,7 @@ suspend fun getMyPost(
 
     try {
         val result = window.api.tryGet(
-            apiPath = "getmypost?skip=$skip&author=${localStorage["username"]}",
-
+            apiPath = "getmyposts?skip=$skip&author=${localStorage["username"]}",
         )?.decodeToString()?.parseData<ApiListResponse>() ?: ApiListResponse.Error("Not Found")
         onSuccess(result)
     } catch (e: Exception) {

@@ -4,6 +4,7 @@ import com.lintang.multiplatform.models.Post
 import com.lintang.multiplatform.models.PostWithoutDetails
 import com.lintang.multiplatform.models.User
 import com.lintang.multiplatform.utils.Constants
+import com.lintang.multiplatform.utils.Constants.POST_PER_REQUEST
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Indexes.descending
 import com.mongodb.kotlin.client.coroutine.MongoClient
@@ -66,9 +67,9 @@ class MongoDB(private val context: InitApiContext) : MongoRepository {
     override suspend fun getMyPosts(skip:Int,author:String):List<PostWithoutDetails>{
         return  postCollection.withDocumentClass<PostWithoutDetails>()
             .find(Filters.eq(PostWithoutDetails::author.name,author))
-            .sort(descending(PostWithoutDetails::author.name))
+            .sort(descending(PostWithoutDetails::date.name))
             .skip(skip)
-            .limit(8)
+            .limit(POST_PER_REQUEST)
             .toList()
     }
 }

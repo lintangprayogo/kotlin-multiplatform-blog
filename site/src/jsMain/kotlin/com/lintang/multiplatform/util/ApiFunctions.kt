@@ -107,6 +107,21 @@ suspend fun getMyPost(
     }
 }
 
+suspend fun searchPost(
+    title: String,
+    skip: Int, onSuccess: (response: ApiListResponse) -> Unit,
+    onError: (Exception) -> Unit
+) {
+    return try {
+        val result = window.api.tryGet(
+            "searchposts?skip=$skip&title=$title",
+        )?.decodeToString()?.parseData<ApiListResponse>() ?: ApiListResponse.Error("Not Found")
+        onSuccess(result)
+    } catch (e: Exception) {
+        onError(e)
+    }
+}
+
 suspend fun deleteSelectedPost(selectedPosts: List<String>): Boolean {
     return try {
         val result = window.api.tryPost(

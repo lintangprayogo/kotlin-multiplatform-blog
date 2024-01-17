@@ -6,13 +6,14 @@ object Constants {
     const val COLLAPSE_PANEL_HEIGHT = 100
     const val PAGE_WIDTH = 1920
     const val HOMOR_BASE_URL="https://api.humorapi.com/jokes/random?api-key=12129029bc03477b84715bb03af7e9dc"
-    const val POST_PER_REQUEST=8
+    const val POST_PER_REQUEST = 8
+    const val TITLE_PARAM = "title"
 }
 
 object Res {
     object Image {
-        val logo = "/logo.svg"
-        val laugh = "/laugh.png"
+        const val logo = "/logo.svg"
+        const val laugh = "/laugh.png"
     }
     object Icon {
         const val bold = "/bold.svg"

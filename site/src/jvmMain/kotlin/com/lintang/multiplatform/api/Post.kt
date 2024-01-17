@@ -58,6 +58,25 @@ suspend fun deleteMyPost(context: ApiContext) {
     }
 }
 
+@Api(routeOverride = "searchposts")
+suspend fun searchPostByTitle(context: ApiContext) {
+    try {
+        val skip = context.req.params["skip"]?.toInt() ?: 0
+        val title: String = context.req.params["title"] ?: ""
+        val result = context.data.getValue<MongoDB>().searchPostByTitle(title = title, skip = skip)
+        context.res.setBodyText(Json.encodeToString(ApiListResponse.Success(result)))
+    } catch (e: Exception) {
+        context.res.setBodyText(
+            Json.encodeToString(
+                ApiListResponse.Error(
+                    e.message ?: "unknown error"
+                )
+            )
+        )
+    }
+}
+
+
 inline fun <reified T> Request.getBody(): T? {
     return body?.decodeToString()?.let { return Json.decodeFromString(it) }
 }

@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import com.lintang.multiplatform.Screen
 import com.lintang.multiplatform.components.AdminPageLayout
 import com.lintang.multiplatform.components.Posts
 import com.lintang.multiplatform.components.SearchBar
@@ -17,11 +18,14 @@ import com.lintang.multiplatform.models.Theme
 import com.lintang.multiplatform.util.Constants
 import com.lintang.multiplatform.util.Constants.FONT_FAMILY
 import com.lintang.multiplatform.util.Constants.POST_PER_REQUEST
+import com.lintang.multiplatform.util.Constants.TITLE_PARAM
+import com.lintang.multiplatform.util.Id
 import com.lintang.multiplatform.util.deleteSelectedPost
 import com.lintang.multiplatform.util.getMyPost
 import com.lintang.multiplatform.util.isUserLoggedIn
 import com.lintang.multiplatform.util.noBorder
 import com.lintang.multiplatform.util.parseSelectedPostList
+import com.lintang.multiplatform.util.searchPost
 import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.Visibility
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
@@ -46,15 +50,18 @@ import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.visibility
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
+import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.forms.Switch
 import com.varabyte.kobweb.silk.components.forms.SwitchSize
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
+import kotlinx.browser.document
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Button
+import org.w3c.dom.HTMLInputElement
 
 //routing ada pada
 
@@ -68,6 +75,7 @@ fun MyPostPage() {
 
 @Composable
 fun MyPostScreen() {
+    val context = rememberPageContext()
     val breakpoint = rememberBreakpoint()
     val myposts = remember { mutableStateListOf<PostWithoutDetails>() }
     var selectable by remember { mutableStateOf(false) }
@@ -77,20 +85,43 @@ fun MyPostScreen() {
     val selectedPosts = remember { mutableStateListOf<String>() }
     val scope = rememberCoroutineScope()
 
-    LaunchedEffect(Unit) {
-        getMyPost(skip = 0, onSuccess = {
-            if (it is ApiListResponse.Success) {
-                myposts.clear()
-                myposts.addAll(it.data)
-                isShowMoreVisibility = it.data.size >= POST_PER_REQUEST
-                postSkip += POST_PER_REQUEST
-            }
-            if (it is ApiListResponse.Error) {
-                println("SOMETHING BAD HAPPEN ${it.message}")
-            }
-        }, onError = {
-            println("SOMETHING BAD HAPPEN $it")
-        })
+    val hasParams = remember(context.route) { context.route.params.containsKey(TITLE_PARAM) }
+    val titleParam = remember(key1 = context.route) { context.route.params[TITLE_PARAM] ?: "" }
+
+    LaunchedEffect(key1 = context.route) {
+        postSkip = 0
+        if (hasParams) {
+            searchPost(skip = postSkip, onSuccess = {
+                if (it is ApiListResponse.Success) {
+                    myposts.clear()
+                    myposts.addAll(it.data)
+                    isShowMoreVisibility = it.data.size >= POST_PER_REQUEST
+                    postSkip += POST_PER_REQUEST
+                }
+                if (it is ApiListResponse.Error) {
+                    println("SOMETHING BAD HAPPEN ${it.message}")
+                }
+            }, onError = {
+                println("SOMETHING BAD HAPPEN $it")
+            }, title =
+            titleParam
+            )
+        } else {
+            getMyPost(skip = postSkip, onSuccess = {
+                if (it is ApiListResponse.Success) {
+                    myposts.clear()
+                    myposts.addAll(it.data)
+                    isShowMoreVisibility = it.data.size >= POST_PER_REQUEST
+                    postSkip += POST_PER_REQUEST
+                }
+                if (it is ApiListResponse.Error) {
+                    println("SOMETHING BAD HAPPEN ${it.message}")
+                }
+            }, onError = {
+                println("SOMETHING BAD HAPPEN $it")
+            })
+        }
+
     }
 
 
@@ -112,6 +143,13 @@ fun MyPostScreen() {
                 SearchBar(
                     breakpoint = breakpoint,
                     onEnterClick = {
+                        val title =
+                            (document.getElementById(Id.adminSearchBar) as HTMLInputElement).value
+                        if (title.isNotEmpty()) {
+                            context.router.navigateTo(Screen.AdminMyPosts.searchPost(title))
+                        } else {
+                            context.router.navigateTo(Screen.AdminMyPosts.route)
+                        }
                     }, onSearchIconClick = {
 
                     })
@@ -161,7 +199,6 @@ fun MyPostScreen() {
                         .fontWeight(FontWeight.Medium)
                         .visibility(if (selectedPosts.isNotEmpty()) Visibility.Visible else Visibility.Hidden)
                         .onClick {
-                            println("my selected ${selectedPosts.size}")
                             scope.launch {
                                 val result = deleteSelectedPost(selectedPosts)
                                 if (result) {
@@ -189,25 +226,47 @@ fun MyPostScreen() {
                 isShowMoreVisibility = isShowMoreVisibility,
                 onShowMore = {
                     scope.launch {
-                        getMyPost(skip = postSkip, onSuccess = {
-                            if (it is ApiListResponse.Success) {
-                                if (it.data.isNotEmpty()) {
-                                    myposts.addAll(it.data)
-                                    if (it.data.size < POST_PER_REQUEST) isShowMoreVisibility =
-                                        false
-                                    postSkip += POST_PER_REQUEST
-                                } else {
-                                    isShowMoreVisibility = false
+                        if (hasParams) {
+                            searchPost(skip = 0, onSuccess = {
+                                if (it is ApiListResponse.Success) {
+                                    if (it.data.isNotEmpty()) {
+                                        myposts.addAll(it.data)
+                                        if (it.data.size < POST_PER_REQUEST) isShowMoreVisibility =
+                                            false
+                                        postSkip += POST_PER_REQUEST
+                                    } else {
+                                        isShowMoreVisibility = false
+                                    }
                                 }
+                                if (it is ApiListResponse.Error) {
+                                    println("SOMETHING BAD HAPPEN ${it.message}")
+                                }
+                            }, onError = {
+                                println("SOMETHING BAD HAPPEN $it")
+                            }, title =
+                            titleParam
+                            )
+                        } else {
+                            getMyPost(skip = postSkip, onSuccess = {
+                                if (it is ApiListResponse.Success) {
+                                    if (it.data.isNotEmpty()) {
+                                        myposts.addAll(it.data)
+                                        if (it.data.size < POST_PER_REQUEST) isShowMoreVisibility =
+                                            false
+                                        postSkip += POST_PER_REQUEST
+                                    } else {
+                                        isShowMoreVisibility = false
+                                    }
+                                }
+                                if (it is ApiListResponse.Error) {
+                                    println("SOMETHING BAD HAPPEN ${it.message}")
+                                }
+                            }, onError = {
+                                println("SOMETHING BAD HAPPEN $it")
                             }
-                            if (it is ApiListResponse.Error) {
-                                println("SOMETHING BAD HAPPEN ${it.message}")
-                            }
-                        }, onError = {
-                            println("SOMETHING BAD HAPPEN $it")
-                        }
 
-                        )
+                            )
+                        }
                     }
                 },
                 onDeselect = { id ->

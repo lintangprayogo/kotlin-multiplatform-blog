@@ -6,6 +6,7 @@ import com.lintang.multiplatform.models.Post
 import com.varabyte.kobweb.api.Api
 import com.varabyte.kobweb.api.ApiContext
 import com.varabyte.kobweb.api.data.getValue
+import com.varabyte.kobweb.api.http.Request
 import com.varabyte.kobweb.api.http.setBodyText
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -14,9 +15,7 @@ import org.bson.codecs.ObjectIdGenerator
 @Api(routeOverride = "addpost")
 suspend fun AddPost(context: ApiContext) {
     try {
-        val post = context.req.body?.decodeToString()?.let {
-            Json.decodeFromString<Post>(it)
-        }
+        val post = context.req.getBody<Post>()
         val newPost = post?.copy(_id = ObjectIdGenerator().generate().toString())
 
         val result = newPost?.let {
@@ -26,7 +25,6 @@ suspend fun AddPost(context: ApiContext) {
         context.res.setBodyText(result)
     } catch (e: Exception) {
         context.res.setBodyText(Json.encodeToString(e.message))
-
     }
 
 }
@@ -47,4 +45,19 @@ suspend fun getMyPost(context: ApiContext) {
             )
         )
     }
+}
+
+@Api(routeOverride = "deletemyposts")
+suspend fun deleteMyPost(context: ApiContext) {
+    try {
+        val postIds = context.req.getBody<List<String>>() ?: listOf()
+        val result = context.data.getValue<MongoDB>().deleteSelectedPosts(postIds)
+        context.res.setBodyText(Json.encodeToString(result))
+    } catch (e: Exception) {
+        context.res.setBodyText(Json.encodeToString(e.message ?: e.stackTrace ?: "UKNOWN ERROR"))
+    }
+}
+
+inline fun <reified T> Request.getBody(): T? {
+    return body?.decodeToString()?.let { return Json.decodeFromString(it) }
 }

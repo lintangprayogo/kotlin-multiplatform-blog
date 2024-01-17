@@ -107,6 +107,21 @@ suspend fun getMyPost(
     }
 }
 
+suspend fun deleteSelectedPost(selectedPosts: List<String>): Boolean {
+    return try {
+        val result = window.api.tryPost(
+            "deletemyposts",
+            body = Json.encodeToString(selectedPosts.toList()).encodeToByteArray()
+        )?.decodeToString()
+        println(result)
+        return result.toBoolean()
+    } catch (e: Exception) {
+        println("ERROR ${e.message} unknown error")
+        false
+    }
+
+}
+
 inline fun <reified T> String?.parseData(): T {
     return Json.decodeFromString(this.toString())
 }

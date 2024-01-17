@@ -64,12 +64,16 @@ class MongoDB(private val context: InitApiContext) : MongoRepository {
         }
     }
 
-    override suspend fun getMyPosts(skip:Int,author:String):List<PostWithoutDetails>{
-        return  postCollection.withDocumentClass<PostWithoutDetails>()
-            .find(Filters.eq(PostWithoutDetails::author.name,author))
+    override suspend fun getMyPosts(skip: Int, author: String): List<PostWithoutDetails> {
+        return postCollection.withDocumentClass<PostWithoutDetails>()
+            .find(Filters.eq(PostWithoutDetails::author.name, author))
             .sort(descending(PostWithoutDetails::date.name))
             .skip(skip)
             .limit(POST_PER_REQUEST)
             .toList()
+    }
+
+    override suspend fun deleteSelectedPosts(postIds: List<String>): Boolean {
+        return postCollection.deleteMany(Filters.`in`(Post::_id.name, postIds)).wasAcknowledged()
     }
 }

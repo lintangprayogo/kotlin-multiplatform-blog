@@ -15,12 +15,15 @@ import com.lintang.multiplatform.models.ApiListResponse
 import com.lintang.multiplatform.models.PostWithoutDetails
 import com.lintang.multiplatform.models.Theme
 import com.lintang.multiplatform.util.Constants
+import com.lintang.multiplatform.util.Constants.FONT_FAMILY
 import com.lintang.multiplatform.util.Constants.POST_PER_REQUEST
+import com.lintang.multiplatform.util.deleteSelectedPost
 import com.lintang.multiplatform.util.getMyPost
 import com.lintang.multiplatform.util.isUserLoggedIn
 import com.lintang.multiplatform.util.noBorder
-import com.lintang.multiplatform.util.parsePostList
+import com.lintang.multiplatform.util.parseSelectedPostList
 import com.varabyte.kobweb.compose.css.FontWeight
+import com.varabyte.kobweb.compose.css.Visibility
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
@@ -40,6 +43,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.padding
+import com.varabyte.kobweb.compose.ui.modifiers.visibility
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.silk.components.forms.Switch
@@ -70,7 +74,7 @@ fun MyPostScreen() {
     var switchText by remember { mutableStateOf("Select ") }
     var isShowMoreVisibility by remember { mutableStateOf(true) }
     var postSkip by remember { mutableStateOf(0) }
-    var selectedPosts = remember { mutableStateListOf<String>() }
+    val selectedPosts = remember { mutableStateListOf<String>() }
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
@@ -108,7 +112,6 @@ fun MyPostScreen() {
                 SearchBar(
                     breakpoint = breakpoint,
                     onEnterClick = {
-
                     }, onSearchIconClick = {
 
                     })
@@ -116,47 +119,64 @@ fun MyPostScreen() {
 
             Row(
                 modifier = Modifier
-                    .fillMaxWidth(90.percent)
+                    .fillMaxWidth(
+                        if (breakpoint > Breakpoint.MD) 80.percent
+                        else 90.percent
+                    )
                     .margin(bottom = 24.px),
                 verticalAlignment = Alignment.Bottom,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Switch(
-                        modifier = Modifier.margin(right = 10.px),
+                        modifier = Modifier.margin(right = 8.px),
                         size = SwitchSize.LG,
                         checked = selectable,
-                        onCheckedChange = { isSelected ->
-                            selectable = isSelected
-                            switchText = if (isSelected) {
-                                "0 Post Selected"
+                        onCheckedChange = {
+                            selectable = it
+                            if (!selectable) {
+                                switchText = "Select"
+                                selectedPosts.clear()
                             } else {
-                                "Select"
+                                switchText = "0 Posts Selected"
                             }
-                        })
+                        }
+                    )
                     SpanText(
-                        modifier = Modifier
-                            .color(if (selectable) Colors.Black else Theme.HalfBlack.rgb)
-                            .fontFamily(Constants.FONT_FAMILY)
-                            .fontSize(16.px),
+                        modifier = Modifier.color(if (selectable) Colors.Black else Theme.HalfBlack.rgb),
                         text = switchText
                     )
                 }
                 Button(
-                    attrs = Modifier.height(54.px)
+                    attrs = Modifier
                         .margin(right = 20.px)
-                        .padding(topBottom = 14.px, leftRight = 20.px)
+                        .height(54.px)
+                        .padding(leftRight = 24.px)
                         .backgroundColor(Theme.Red.rgb)
                         .color(Colors.White)
                         .noBorder()
-                        .borderRadius(4.px)
-                        .fontFamily(Constants.FONT_FAMILY)
+                        .borderRadius(r = 4.px)
+                        .fontFamily(FONT_FAMILY)
                         .fontSize(14.px)
                         .fontWeight(FontWeight.Medium)
+                        .visibility(if (selectedPosts.isNotEmpty()) Visibility.Visible else Visibility.Hidden)
                         .onClick {
-
-                        }
-                        .toAttrs(),
+                            println("my selected ${selectedPosts.size}")
+                            scope.launch {
+                                val result = deleteSelectedPost(selectedPosts)
+                                if (result) {
+                                    selectable = false
+                                    switchText = "Select"
+                                    postSkip -= selectedPosts.size
+                                    selectedPosts.forEach { deletedPostId ->
+                                        myposts.removeAll {
+                                            it._id == deletedPostId
+                                        }
+                                    }
+                                    selectedPosts.clear()
+                                }
+                            }
+                        }.toAttrs(),
                 ) {
                     SpanText("Delete")
                 }
@@ -192,11 +212,11 @@ fun MyPostScreen() {
                 },
                 onDeselect = { id ->
                     selectedPosts.remove(id)
-                    switchText = parsePostList(myposts)
+                    switchText = parseSelectedPostList(selectedPosts)
                 },
                 onSelect = { id ->
                     selectedPosts.add(id)
-                    switchText = parsePostList(myposts)
+                    switchText = parseSelectedPostList(selectedPosts)
                 },
                 selectable = selectable
 

@@ -59,8 +59,9 @@ import org.jetbrains.compose.web.dom.CheckboxInput
 fun PostPreview(
     post: PostWithoutDetails,
     selectable: Boolean = false,
-    onSelect: (String) -> Unit,
-    onDeselect: (String) -> Unit,
+    onSelect: (id:String) -> Unit,
+    onDeselect: (id:String) -> Unit,
+    onDetail: (id:String) -> Unit,
 ) {
     var checked by remember(selectable) { mutableStateOf(false) }
 
@@ -84,6 +85,8 @@ fun PostPreview(
                     } else {
                         onDeselect(post._id)
                     }
+                } else {
+                    onDetail(post._id)
                 }
             }
             .cursor(Cursor.Pointer)
@@ -158,8 +161,9 @@ fun Posts(
     posts: List<PostWithoutDetails>,
     isShowMoreVisibility: Boolean,
     selectable: Boolean,
-    onSelect: (String) -> Unit,
-    onDeselect: (String) -> Unit,
+    onSelect: (id:String) -> Unit,
+    onDeselect: (id:String) -> Unit,
+    onDetail: (id:String) -> Unit,
     onShowMore: () -> Unit,
 ) {
     Column(
@@ -175,7 +179,8 @@ fun Posts(
                     it,
                     selectable = selectable,
                     onSelect = onSelect,
-                    onDeselect = onDeselect
+                    onDeselect = onDeselect,
+                    onDetail = onDetail
                 )
             }
         }

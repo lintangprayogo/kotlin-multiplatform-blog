@@ -277,6 +277,9 @@ fun MyPostScreen() {
                     selectedPosts.add(id)
                     switchText = parseSelectedPostList(selectedPosts)
                 },
+                onDetail = { id ->
+                    context.router.navigateTo(Screen.AdminCreate.editPostId(id))
+                },
                 selectable = selectable
 
             )

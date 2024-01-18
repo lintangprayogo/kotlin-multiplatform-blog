@@ -1,6 +1,7 @@
 package com.lintang.multiplatform.pages.admin
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -10,6 +11,7 @@ import com.lintang.multiplatform.Screen
 import com.lintang.multiplatform.components.AdminPageLayout
 import com.lintang.multiplatform.components.LinkPopup
 import com.lintang.multiplatform.components.MessagePopup
+import com.lintang.multiplatform.models.ApiResponse
 import com.lintang.multiplatform.models.Category
 import com.lintang.multiplatform.models.ControlStyle
 import com.lintang.multiplatform.models.EditorControl
@@ -21,6 +23,7 @@ import com.lintang.multiplatform.pages.admin.create_components.EditorControls
 import com.lintang.multiplatform.pages.admin.create_components.Editors
 import com.lintang.multiplatform.pages.admin.create_components.TagPost
 import com.lintang.multiplatform.pages.admin.create_components.ThumbnailUploader
+import com.lintang.multiplatform.util.Constants
 import com.lintang.multiplatform.util.Constants.FONT_FAMILY
 import com.lintang.multiplatform.util.Constants.SIDE_PANEL_WIDTH
 import com.lintang.multiplatform.util.Id.editor
@@ -29,6 +32,7 @@ import com.lintang.multiplatform.util.Id.thumbnailInput
 import com.lintang.multiplatform.util.Id.titleInput
 import com.lintang.multiplatform.util.addPost
 import com.lintang.multiplatform.util.applyStyle
+import com.lintang.multiplatform.util.getPostById
 import com.lintang.multiplatform.util.getSelectedText
 import com.lintang.multiplatform.util.isUserLoggedIn
 import com.lintang.multiplatform.util.noBorder
@@ -103,6 +107,33 @@ private fun CreateScreen() {
     var uiState by remember { mutableStateOf(CreateUiState()) }
     val scope = rememberCoroutineScope()
     val context = rememberPageContext()
+    val hasParams =
+        remember(context.route) { context.route.params.containsKey(Constants.POST_ID_PARAM) }
+
+
+    LaunchedEffect(hasParams) {
+        if (hasParams) {
+            val response = getPostById(context.route.params[Constants.POST_ID_PARAM] ?: "")
+            if (response is ApiResponse.Success) {
+                val result = response.data
+                uiState = uiState.copy(
+                    id = result._id,
+                    title = result.title,
+                    subTitle = result.subtitle,
+                    thumbnail = result.thumbnail,
+                    isMain = result.isMain,
+                    content = result.content,
+                    category = result.category,
+                    isPopular = result.isPopular,
+                    isSponsored = result.isSponsored
+                )
+                (document.getElementById(titleInput) as HTMLInputElement).value = result.title
+                (document.getElementById(subtitleInput) as HTMLInputElement).value = result.subtitle
+                (document.getElementById(editor) as HTMLTextAreaElement).value = result.content
+                (document.getElementById(thumbnailInput) as HTMLInputElement).value = result.thumbnail
+            }
+        }
+    }
 
     AdminPageLayout {
         Box(
@@ -230,6 +261,7 @@ private fun CreateScreen() {
                 Editors(uiState.isEditorVisible)
 
                 CreateButton(
+                    hasParams=hasParams,
                     onClick = {
                         uiState = uiState.copy(
                             title = (document.getElementById(titleInput) as HTMLInputElement).value,

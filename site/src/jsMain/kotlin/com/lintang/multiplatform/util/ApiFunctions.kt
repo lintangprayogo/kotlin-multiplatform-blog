@@ -1,10 +1,12 @@
 package com.lintang.multiplatform.util
 
 import com.lintang.multiplatform.models.ApiListResponse
+import com.lintang.multiplatform.models.ApiResponse
 import com.lintang.multiplatform.models.Post
 import com.lintang.multiplatform.models.RandomJoke
 import com.lintang.multiplatform.models.User
 import com.lintang.multiplatform.models.UserWithoutPassword
+import com.lintang.multiplatform.util.Constants.POST_ID_PARAM
 import com.varabyte.kobweb.browser.api
 import com.varabyte.kobweb.compose.http.http
 import kotlinx.browser.localStorage
@@ -133,6 +135,19 @@ suspend fun deleteSelectedPost(selectedPosts: List<String>): Boolean {
     } catch (e: Exception) {
         println("ERROR ${e.message} unknown error")
         false
+    }
+
+}
+
+
+suspend fun getPostById(id: String): ApiResponse {
+    return try {
+        val result = window.api.tryPost(
+            "getpostbyid?$POST_ID_PARAM=$id",
+        )?.decodeToString()
+        result.parseData()
+    } catch (e: Exception) {
+        ApiResponse.Error(e.message ?: "")
     }
 
 }

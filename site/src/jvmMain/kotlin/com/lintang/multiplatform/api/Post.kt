@@ -2,7 +2,7 @@ package com.lintang.multiplatform.api
 
 import com.lintang.multiplatform.data.MongoDB
 import com.lintang.multiplatform.models.ApiListResponse
-import com.lintang.multiplatform.models.Post
+import com.lintang.multiplatform.models.ApiResponse
 import com.varabyte.kobweb.api.Api
 import com.varabyte.kobweb.api.ApiContext
 import com.varabyte.kobweb.api.data.getValue
@@ -76,6 +76,21 @@ suspend fun searchPostByTitle(context: ApiContext) {
     }
 }
 
+@Api(routeOverride = "getpostbyid")
+suspend fun getPostById(context: ApiContext) {
+    try {
+        val postId = context.req.params["postId"]
+        val post = if (postId.isNullOrEmpty()) null else context.data.getValue<MongoDB>().getPosById(postId)
+
+        if (post == null) {
+            context.res.setBodyText(Json.encodeToString(ApiResponse.Error("Data Tidak temukan")))
+        } else {
+            context.res.setBodyText(Json.encodeToString(ApiResponse.Success(post)))
+        }
+    } catch (e: Exception) {
+        Json.encodeToString(e.message ?: e.stackTrace ?: "unknown error")
+    }
+}
 
 inline fun <reified T> Request.getBody(): T? {
     return body?.decodeToString()?.let { return Json.decodeFromString(it) }

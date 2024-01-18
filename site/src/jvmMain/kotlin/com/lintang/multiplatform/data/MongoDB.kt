@@ -1,7 +1,5 @@
 package com.lintang.multiplatform.data
 
-import com.lintang.multiplatform.models.Post
-import com.lintang.multiplatform.models.PostWithoutDetails
 import com.lintang.multiplatform.models.User
 import com.lintang.multiplatform.utils.Constants
 import com.lintang.multiplatform.utils.Constants.POST_PER_REQUEST
@@ -85,5 +83,9 @@ class MongoDB(private val context: InitApiContext) : MongoRepository {
             .skip(skip)
             .limit(POST_PER_REQUEST)
             .toList()
+    }
+
+    override suspend fun getPosById(id: String): Post? {
+        return postCollection.find(Filters.eq(Post::_id.name,id)).firstOrNull()
     }
 }

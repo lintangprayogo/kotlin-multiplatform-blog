@@ -3,6 +3,7 @@ package com.lintang.multiplatform.api
 import com.lintang.multiplatform.data.MongoDB
 import com.lintang.multiplatform.models.ApiListResponse
 import com.lintang.multiplatform.models.ApiResponse
+import com.lintang.multiplatform.models.Post
 import com.varabyte.kobweb.api.Api
 import com.varabyte.kobweb.api.ApiContext
 import com.varabyte.kobweb.api.data.getValue

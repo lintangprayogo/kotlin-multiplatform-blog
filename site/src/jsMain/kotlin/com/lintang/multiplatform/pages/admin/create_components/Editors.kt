@@ -96,7 +96,7 @@ fun EditorControls(
                         .onClick {
                             document.getElementById(Id.editorPreview)?.innerHTML = getEditor().value
                             onEditorVisibilityChange(!editorsVisibile)
-                            js("hljs.highlightAll()")
+                            js("hljs.highlightAll()") as Unit
                         }
                         .toAttrs()
                 ) {

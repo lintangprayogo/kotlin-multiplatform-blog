@@ -1,5 +1,7 @@
 package com.lintang.multiplatform.data
 
+import com.lintang.multiplatform.models.Post
+import com.lintang.multiplatform.models.PostWithoutDetails
 import com.lintang.multiplatform.models.User
 import com.lintang.multiplatform.utils.Constants
 import com.lintang.multiplatform.utils.Constants.POST_PER_REQUEST

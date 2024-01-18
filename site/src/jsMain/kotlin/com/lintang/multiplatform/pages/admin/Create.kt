@@ -13,6 +13,7 @@ import com.lintang.multiplatform.components.LinkPopup
 import com.lintang.multiplatform.components.MessagePopup
 import com.lintang.multiplatform.models.ApiResponse
 import com.lintang.multiplatform.models.Category
+import com.lintang.multiplatform.models.Constants.POST_ID_PARAM
 import com.lintang.multiplatform.models.ControlStyle
 import com.lintang.multiplatform.models.EditorControl
 import com.lintang.multiplatform.models.Post
@@ -23,7 +24,6 @@ import com.lintang.multiplatform.pages.admin.create_components.EditorControls
 import com.lintang.multiplatform.pages.admin.create_components.Editors
 import com.lintang.multiplatform.pages.admin.create_components.TagPost
 import com.lintang.multiplatform.pages.admin.create_components.ThumbnailUploader
-import com.lintang.multiplatform.util.Constants
 import com.lintang.multiplatform.util.Constants.FONT_FAMILY
 import com.lintang.multiplatform.util.Constants.SIDE_PANEL_WIDTH
 import com.lintang.multiplatform.util.Id.editor
@@ -108,12 +108,12 @@ private fun CreateScreen() {
     val scope = rememberCoroutineScope()
     val context = rememberPageContext()
     val hasParams =
-        remember(context.route) { context.route.params.containsKey(Constants.POST_ID_PARAM) }
+        remember(context.route) { context.route.params.containsKey(POST_ID_PARAM) }
 
 
     LaunchedEffect(hasParams) {
         if (hasParams) {
-            val response = getPostById(context.route.params[Constants.POST_ID_PARAM] ?: "")
+            val response = getPostById(context.route.params[POST_ID_PARAM] ?: "")
             if (response is ApiResponse.Success) {
                 val result = response.data
                 uiState = uiState.copy(

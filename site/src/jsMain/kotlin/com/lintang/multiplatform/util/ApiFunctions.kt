@@ -2,11 +2,14 @@ package com.lintang.multiplatform.util
 
 import com.lintang.multiplatform.models.ApiListResponse
 import com.lintang.multiplatform.models.ApiResponse
+import com.lintang.multiplatform.models.Constants.AUTHOR_PARAM
+import com.lintang.multiplatform.models.Constants.POST_ID_PARAM
+import com.lintang.multiplatform.models.Constants.SKIP_PARAM
+import com.lintang.multiplatform.models.Constants.TITLE_PARAM
 import com.lintang.multiplatform.models.Post
 import com.lintang.multiplatform.models.RandomJoke
 import com.lintang.multiplatform.models.User
 import com.lintang.multiplatform.models.UserWithoutPassword
-import com.lintang.multiplatform.util.Constants.POST_ID_PARAM
 import com.varabyte.kobweb.browser.api
 import com.varabyte.kobweb.compose.http.http
 import kotlinx.browser.localStorage
@@ -101,7 +104,7 @@ suspend fun getMyPost(
 
     try {
         val result = window.api.tryGet(
-            apiPath = "getmyposts?skip=$skip&author=${localStorage["username"]}",
+            apiPath = "getmyposts?$SKIP_PARAM=$skip&$AUTHOR_PARAM=${localStorage["username"]}",
         )?.decodeToString()?.parseData<ApiListResponse>() ?: ApiListResponse.Error("Not Found")
         onSuccess(result)
     } catch (e: Exception) {
@@ -116,7 +119,7 @@ suspend fun searchPost(
 ) {
     return try {
         val result = window.api.tryGet(
-            "searchposts?skip=$skip&title=$title",
+            "searchposts?$SKIP_PARAM=$skip&$TITLE_PARAM=$title",
         )?.decodeToString()?.parseData<ApiListResponse>() ?: ApiListResponse.Error("Not Found")
         onSuccess(result)
     } catch (e: Exception) {

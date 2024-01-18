@@ -3,6 +3,10 @@ package com.lintang.multiplatform.api
 import com.lintang.multiplatform.data.MongoDB
 import com.lintang.multiplatform.models.ApiListResponse
 import com.lintang.multiplatform.models.ApiResponse
+import com.lintang.multiplatform.models.Constants.AUTHOR_PARAM
+import com.lintang.multiplatform.models.Constants.POST_ID_PARAM
+import com.lintang.multiplatform.models.Constants.SKIP_PARAM
+import com.lintang.multiplatform.models.Constants.TITLE_PARAM
 import com.lintang.multiplatform.models.Post
 import com.varabyte.kobweb.api.Api
 import com.varabyte.kobweb.api.ApiContext
@@ -33,8 +37,8 @@ suspend fun AddPost(context: ApiContext) {
 @Api(routeOverride = "getmyposts")
 suspend fun getMyPost(context: ApiContext) {
     try {
-        val skip = context.req.params["skip"]?.toInt() ?: 0
-        val author: String = context.req.params["author"] ?: ""
+        val skip = context.req.params[SKIP_PARAM]?.toInt() ?: 0
+        val author: String = context.req.params[AUTHOR_PARAM] ?: ""
         val result = context.data.getValue<MongoDB>().getMyPosts(skip, author)
         context.res.setBodyText(Json.encodeToString(ApiListResponse.Success(result)))
     } catch (e: Exception) {
@@ -62,8 +66,8 @@ suspend fun deleteMyPost(context: ApiContext) {
 @Api(routeOverride = "searchposts")
 suspend fun searchPostByTitle(context: ApiContext) {
     try {
-        val skip = context.req.params["skip"]?.toInt() ?: 0
-        val title: String = context.req.params["title"] ?: ""
+        val skip = context.req.params[SKIP_PARAM]?.toInt() ?: 0
+        val title: String = context.req.params[TITLE_PARAM] ?: ""
         val result = context.data.getValue<MongoDB>().searchPostByTitle(title = title, skip = skip)
         context.res.setBodyText(Json.encodeToString(ApiListResponse.Success(result)))
     } catch (e: Exception) {
@@ -80,7 +84,7 @@ suspend fun searchPostByTitle(context: ApiContext) {
 @Api(routeOverride = "getpostbyid")
 suspend fun getPostById(context: ApiContext) {
     try {
-        val postId = context.req.params["postId"]
+        val postId = context.req.params[POST_ID_PARAM]
         val post = if (postId.isNullOrEmpty()) null else context.data.getValue<MongoDB>().getPosById(postId)
 
         if (post == null) {

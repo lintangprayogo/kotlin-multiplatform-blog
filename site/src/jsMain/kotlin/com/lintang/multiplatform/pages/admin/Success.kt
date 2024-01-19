@@ -2,7 +2,9 @@ package com.lintang.multiplatform.pages.admin
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import com.lintang.multiplatform.Screen
+import com.lintang.multiplatform.models.Constants.UPDATED_PARAM
 import com.lintang.multiplatform.models.Theme
 import com.lintang.multiplatform.util.Constants
 import com.lintang.multiplatform.util.Res
@@ -26,6 +28,9 @@ import org.jetbrains.compose.web.css.px
 @Composable
 fun SuccessPage() {
     val context = rememberPageContext()
+    val isUpdated =
+        remember(context.route) { (context.route.params[UPDATED_PARAM] ?: "false").toBoolean() }
+
     LaunchedEffect(Unit) {
         delay(5000)
         context.router.navigateTo(Screen.AdminCreate.route)
@@ -42,7 +47,7 @@ fun SuccessPage() {
         )
         SpanText(
             modifier = Modifier.fontFamily(Constants.FONT_FAMILY).fontSize(24.px),
-            text = "Post Successfully Created!"
+            text = if (isUpdated) "Post Successfully Updated!" else "Post Successfully Created!"
         )
         SpanText(
             modifier = Modifier

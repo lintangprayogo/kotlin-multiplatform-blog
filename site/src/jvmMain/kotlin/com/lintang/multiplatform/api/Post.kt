@@ -12,6 +12,7 @@ import com.varabyte.kobweb.api.Api
 import com.varabyte.kobweb.api.ApiContext
 import com.varabyte.kobweb.api.data.getValue
 import com.varabyte.kobweb.api.http.Request
+import com.varabyte.kobweb.api.http.Response
 import com.varabyte.kobweb.api.http.setBodyText
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -21,15 +22,21 @@ import org.bson.codecs.ObjectIdGenerator
 suspend fun AddPost(context: ApiContext) {
     try {
         val post = context.req.getBody<Post>()
-        val newPost = post?.copy(_id = ObjectIdGenerator().generate().toString())
+        val newPost =
+            post?.copy(_id = post._id.ifEmpty { ObjectIdGenerator().generate().toString() })
 
         val result = newPost?.let {
-            context.data.getValue<MongoDB>().addPost(it).toString()
-        } ?: false.toString()
+            if (post._id.isEmpty()) {
+                context.data.getValue<MongoDB>().addPost(it)
+            } else {
+                context.data.getValue<MongoDB>().updatePost(post = post)
+            }
 
-        context.res.setBodyText(result)
+        } ?: false
+
+        context.res.setBody(result)
     } catch (e: Exception) {
-        context.res.setBodyText(Json.encodeToString(e.message))
+        context.res.setBody(e.message)
     }
 
 }
@@ -40,15 +47,9 @@ suspend fun getMyPost(context: ApiContext) {
         val skip = context.req.params[SKIP_PARAM]?.toInt() ?: 0
         val author: String = context.req.params[AUTHOR_PARAM] ?: ""
         val result = context.data.getValue<MongoDB>().getMyPosts(skip, author)
-        context.res.setBodyText(Json.encodeToString(ApiListResponse.Success(result)))
+        context.res.setBody(ApiListResponse.Success(result))
     } catch (e: Exception) {
-        context.res.setBodyText(
-            Json.encodeToString(
-                ApiListResponse.Error(
-                    e.message ?: "unknown error"
-                )
-            )
-        )
+        context.res.setBody(ApiListResponse.Error(e.message ?: "unknown error"))
     }
 }
 
@@ -57,9 +58,9 @@ suspend fun deleteMyPost(context: ApiContext) {
     try {
         val postIds = context.req.getBody<List<String>>() ?: listOf()
         val result = context.data.getValue<MongoDB>().deleteSelectedPosts(postIds)
-        context.res.setBodyText(Json.encodeToString(result))
+        context.res.setBody(result)
     } catch (e: Exception) {
-        context.res.setBodyText(Json.encodeToString(e.message ?: e.stackTrace ?: "UKNOWN ERROR"))
+        context.res.setBody(e.message ?: e.stackTrace ?: "UKNOWN ERROR")
     }
 }
 
@@ -69,15 +70,9 @@ suspend fun searchPostByTitle(context: ApiContext) {
         val skip = context.req.params[SKIP_PARAM]?.toInt() ?: 0
         val title: String = context.req.params[TITLE_PARAM] ?: ""
         val result = context.data.getValue<MongoDB>().searchPostByTitle(title = title, skip = skip)
-        context.res.setBodyText(Json.encodeToString(ApiListResponse.Success(result)))
+        context.res.setBody(ApiListResponse.Success(result))
     } catch (e: Exception) {
-        context.res.setBodyText(
-            Json.encodeToString(
-                ApiListResponse.Error(
-                    e.message ?: "unknown error"
-                )
-            )
-        )
+        context.res.setBody(ApiListResponse.Error(e.message ?: "unknown error"))
     }
 }
 
@@ -88,15 +83,20 @@ suspend fun getPostById(context: ApiContext) {
         val post = if (postId.isNullOrEmpty()) null else context.data.getValue<MongoDB>().getPosById(postId)
 
         if (post == null) {
-            context.res.setBodyText(Json.encodeToString(ApiResponse.Error("Data Tidak temukan")))
+            context.res.setBody(ApiResponse.Error("Data Tidak temukan"))
         } else {
-            context.res.setBodyText(Json.encodeToString(ApiResponse.Success(post)))
+            context.res.setBody(ApiResponse.Success(post))
         }
     } catch (e: Exception) {
-        Json.encodeToString(e.message ?: e.stackTrace ?: "unknown error")
+        context.res.setBody(e.message ?: e.stackTrace ?: "Unknown Error")
     }
 }
 
 inline fun <reified T> Request.getBody(): T? {
     return body?.decodeToString()?.let { return Json.decodeFromString(it) }
+}
+
+inline fun <reified T> Response.setBody(data: T) {
+    setBodyText(Json.encodeToString(data))
+
 }

@@ -91,7 +91,23 @@ data class CreateUiState(
     val isShowMessagePopup: Boolean = false,
     val isShowLinkPopup: Boolean = false,
     val isShowImagePopup: Boolean = false,
-)
+) {
+    fun reset() = CreateUiState(
+        id = "",
+        title = "",
+        subTitle = "",
+        thumbnail = "",
+        content = "",
+        category = Category.Technology,
+        isMain = false,
+        isSponsored = false,
+        isPopular = false,
+        isEditorVisible = true,
+        isShowMessagePopup = false,
+        isShowLinkPopup = false,
+        isShowImagePopup = false
+    )
+}
 
 @Page
 @Composable
@@ -130,8 +146,11 @@ private fun CreateScreen() {
                 (document.getElementById(titleInput) as HTMLInputElement).value = result.title
                 (document.getElementById(subtitleInput) as HTMLInputElement).value = result.subtitle
                 (document.getElementById(editor) as HTMLTextAreaElement).value = result.content
-                (document.getElementById(thumbnailInput) as HTMLInputElement).value = result.thumbnail
+                (document.getElementById(thumbnailInput) as HTMLInputElement).value =
+                    result.thumbnail
             }
+        } else {
+            uiState = uiState.reset()
         }
     }
 
@@ -282,6 +301,7 @@ private fun CreateScreen() {
                             scope.launch {
                                 val result = addPost(
                                     Post(
+                                        _id = uiState.id,
                                         author = localStorage["username"] ?: "",
                                         thumbnail = uiState.thumbnail,
                                         subtitle = uiState.subTitle,
@@ -295,7 +315,11 @@ private fun CreateScreen() {
                                     )
                                 )
                                 if (result) {
-                                    context.router.navigateTo(Screen.Success.route)
+                                    if (uiState.id.isNotEmpty()) {
+                                        context.router.navigateTo(Screen.Success.updated())
+                                    } else {
+                                        context.router.navigateTo(Screen.Success.route)
+                                    }
                                 } else {
                                     println("failed")
                                 }

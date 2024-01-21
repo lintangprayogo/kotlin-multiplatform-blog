@@ -47,7 +47,7 @@ fun SearchBar(
             .thenIf(
                 condition = fullWidth,
                 Modifier.fillMaxWidth()
-            )
+            ) 
             .padding(left = 20.px)
             .height(54.px)
             .backgroundColor(Theme.LightGray.rgb)

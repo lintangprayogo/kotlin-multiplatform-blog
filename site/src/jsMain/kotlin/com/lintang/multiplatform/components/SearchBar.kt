@@ -25,6 +25,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.onFocusOut
 import com.varabyte.kobweb.compose.ui.modifiers.onKeyDown
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.transition
+import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.components.icons.fa.FaMagnifyingGlass
 import com.varabyte.kobweb.silk.components.icons.fa.IconSize
@@ -35,12 +36,18 @@ import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Input
 
 @Composable
-fun SearchBar(onEnterClick: () -> Unit) {
+fun SearchBar(
+    fullWidth: Boolean = true,
+    onEnterClick: () -> Unit
+) {
     var focused by remember { mutableStateOf(false) }
 
     Row(
         modifier = Modifier
-            .fillMaxWidth()
+            .thenIf(
+                condition = fullWidth,
+                Modifier.fillMaxWidth()
+            )
             .padding(left = 20.px)
             .height(54.px)
             .backgroundColor(Theme.LightGray.rgb)

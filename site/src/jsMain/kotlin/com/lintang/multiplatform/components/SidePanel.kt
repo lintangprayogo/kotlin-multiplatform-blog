@@ -81,7 +81,7 @@ fun SidePanel(onMenuClick: () -> Unit) {
 }
 
 @Composable
-fun OverFlowSidePanel(onMenuClose: () -> Unit) {
+fun OverFlowSidePanel(onMenuClose: () -> Unit, content: @Composable () -> Unit) {
     val breakPoint = rememberBreakpoint()
     var translateX by remember { mutableStateOf((-100).percent) }
     var opacity by remember { mutableStateOf((0).percent) }
@@ -143,8 +143,7 @@ fun OverFlowSidePanel(onMenuClose: () -> Unit) {
                     description = "logo image"
                 )
             }
-            NavigationItems()
-
+            content()
         }
     }
 
@@ -212,7 +211,7 @@ private fun NavigationItem(
 }
 
 @Composable
-private fun NavigationItems() {
+ fun NavigationItems() {
     val page = rememberPageContext()
     NavigationItem(
         modifier = Modifier.padding(bottom = 24.px),

@@ -108,6 +108,72 @@ suspend fun getMyPost(
         )?.decodeToString()?.parseData<ApiListResponse>() ?: ApiListResponse.Error("Not Found")
         onSuccess(result)
     } catch (e: Exception) {
+        println(e)
+        onError(e)
+    }
+}
+
+suspend fun getMainPost(
+    onSuccess: (response: ApiListResponse) -> Unit,
+    onError: (Exception) -> Unit
+) {
+
+    try {
+        val result = window.api.tryPost(
+            apiPath = "getmainposts",
+        )?.decodeToString()?.parseData<ApiListResponse>() ?: ApiListResponse.Error("Not Found")
+        onSuccess(result)
+    } catch (e: Exception) {
+        println(e)
+        onError(e)
+    }
+}
+
+suspend fun getLastestPost(
+    skip: Int,
+    onSuccess: (response: ApiListResponse) -> Unit,
+    onError: (Exception) -> Unit
+) {
+
+    try {
+        val result = window.api.tryGet(
+            apiPath = "getlatestposts?skip=$skip",
+        )?.decodeToString()?.parseData<ApiListResponse>() ?: ApiListResponse.Error("Not Found")
+        onSuccess(result)
+    } catch (e: Exception) {
+        println(e)
+        onError(e)
+    }
+}
+suspend fun getPopularPost(
+    skip: Int,
+    onSuccess: (response: ApiListResponse) -> Unit,
+    onError: (Exception) -> Unit
+) {
+
+    try {
+        val result = window.api.tryGet(
+            apiPath = "getpopularposts?skip=$skip",
+        )?.decodeToString()?.parseData<ApiListResponse>() ?: ApiListResponse.Error("Not Found")
+        onSuccess(result)
+    } catch (e: Exception) {
+        println(e)
+        onError(e)
+    }
+}
+
+suspend fun getSponsoredPost(
+    onSuccess: (response: ApiListResponse) -> Unit,
+    onError: (Exception) -> Unit
+) {
+
+    try {
+        val result = window.api.tryGet(
+            apiPath = "getsponsoredposts",
+        )?.decodeToString()?.parseData<ApiListResponse>() ?: ApiListResponse.Error("Not Found")
+        onSuccess(result)
+    } catch (e: Exception) {
+        println(e)
         onError(e)
     }
 }

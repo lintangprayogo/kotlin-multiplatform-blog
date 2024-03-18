@@ -42,11 +42,50 @@ suspend fun AddPost(context: ApiContext) {
 }
 
 @Api(routeOverride = "getmyposts")
-suspend fun getMyPost(context: ApiContext) {
+suspend fun getMyPosts(context: ApiContext) {
     try {
         val skip = context.req.params[SKIP_PARAM]?.toInt() ?: 0
         val author: String = context.req.params[AUTHOR_PARAM] ?: ""
         val result = context.data.getValue<MongoDB>().getMyPosts(skip, author)
+        context.res.setBody(ApiListResponse.Success(result))
+    } catch (e: Exception) {
+        context.res.setBody(ApiListResponse.Error(e.message ?: "unknown error"))
+    }
+}
+
+@Api(routeOverride = "getmainposts")
+suspend fun getMainPosts(context: ApiContext) {
+    try {
+        val result = context.data.getValue<MongoDB>().getMainPosts()
+        context.res.setBody(ApiListResponse.Success(result))
+    } catch (e: Exception) {
+        context.res.setBody(ApiListResponse.Error(e.message ?: "unknown error"))
+    }
+}
+
+@Api(routeOverride = "getsponsoredposts")
+suspend fun getSponsoredPosts(context: ApiContext) {
+    try {
+        val result = context.data.getValue<MongoDB>().getSponsoredPosts()
+        context.res.setBody(ApiListResponse.Success(result))
+    } catch (e: Exception) {
+        context.res.setBody(ApiListResponse.Error(e.message ?: "unknown error"))
+    }
+}
+@Api(routeOverride = "getpopularposts")
+suspend fun getPopularPosts(context: ApiContext) {
+    try {
+        val result = context.data.getValue<MongoDB>().getSponsoredPosts()
+        context.res.setBody(ApiListResponse.Success(result))
+    } catch (e: Exception) {
+        context.res.setBody(ApiListResponse.Error(e.message ?: "unknown error"))
+    }
+}
+@Api(routeOverride = "getlatestposts")
+suspend fun getLastestPosts(context: ApiContext) {
+    try {
+        val skip = (context.req.params["skip"]?:"0").toInt()
+        val result = context.data.getValue<MongoDB>().getLastestPosts(skip)
         context.res.setBody(ApiListResponse.Success(result))
     } catch (e: Exception) {
         context.res.setBody(ApiListResponse.Error(e.message ?: "unknown error"))

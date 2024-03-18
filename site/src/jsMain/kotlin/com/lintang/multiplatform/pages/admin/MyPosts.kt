@@ -10,7 +10,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.lintang.multiplatform.Screen
 import com.lintang.multiplatform.components.AdminPageLayout
-import com.lintang.multiplatform.components.Posts
+import com.lintang.multiplatform.components.PostsView
 import com.lintang.multiplatform.components.SearchBar
 import com.lintang.multiplatform.models.ApiListResponse
 import com.lintang.multiplatform.models.Constants.POST_PER_REQUEST
@@ -220,7 +220,7 @@ fun MyPostScreen() {
 
             }
 
-            Posts(
+            PostsView(
                 breakpoint = breakpoint,
                 posts = myposts,
                 isShowMoreVisibility = isShowMoreVisibility,

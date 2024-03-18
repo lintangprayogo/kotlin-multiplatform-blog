@@ -1,10 +1,14 @@
 package com.lintang.multiplatform.components
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.lintang.multiplatform.models.Theme
+import com.lintang.multiplatform.util.Id
+import com.lintang.multiplatform.util.noBorder
 import com.varabyte.kobweb.compose.css.CSSTransition
 import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.foundation.layout.Row
@@ -37,9 +41,6 @@ import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.ms
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Input
-import com.lintang.multiplatform.models.Theme
-import com.lintang.multiplatform.util.Id
-import com.lintang.multiplatform.util.noBorder
 
 @Composable
 fun SearchBar(
@@ -52,6 +53,9 @@ fun SearchBar(
 ) {
     var focused by remember { mutableStateOf(false) }
 
+    LaunchedEffect(breakpoint) {
+        if (breakpoint >= Breakpoint.SM) onSearchIconClick(false)
+    }
 
 
     if (breakpoint >= Breakpoint.SM || fullWidth) {

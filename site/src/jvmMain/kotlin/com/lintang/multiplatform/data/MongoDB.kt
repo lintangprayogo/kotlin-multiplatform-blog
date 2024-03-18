@@ -1,5 +1,6 @@
 package com.lintang.multiplatform.data
 
+import com.lintang.multiplatform.models.Constants.MAIN_PER_REQUEST
 import com.lintang.multiplatform.models.Constants.POST_PER_REQUEST
 import com.lintang.multiplatform.models.Post
 import com.lintang.multiplatform.models.PostWithoutDetails
@@ -91,6 +92,48 @@ class MongoDB(private val context: InitApiContext) : MongoRepository {
             .sort(descending(PostWithoutDetails::date.name))
             .skip(skip)
             .limit(POST_PER_REQUEST)
+            .toList()
+    }
+
+    override suspend fun getLastestPosts(skip: Int): List<PostWithoutDetails> {
+        return postCollection.withDocumentClass<PostWithoutDetails>()
+            .find(
+                Filters.and(
+                    Filters.eq(PostWithoutDetails::isMain.name, false),
+                    Filters.eq(PostWithoutDetails::isSponsored.name, false),
+                    Filters.eq(PostWithoutDetails::isPopular.name, false)
+                )
+            )
+            .skip(skip)
+            .limit(POST_PER_REQUEST)
+            .toList()
+    }
+
+    override suspend fun getPopularPosts(skip: Int): List<PostWithoutDetails> {
+        return postCollection.withDocumentClass<PostWithoutDetails>()
+            .find(
+                Filters.and(
+                    Filters.eq(PostWithoutDetails::isPopular.name,true)
+                )
+            )
+            .skip(skip)
+            .limit(POST_PER_REQUEST)
+            .toList()
+    }
+
+    override suspend fun getMainPosts(): List<PostWithoutDetails> {
+        return postCollection.withDocumentClass<PostWithoutDetails>()
+            .find(Filters.eq(PostWithoutDetails::isMain.name, true))
+            .sort(descending(PostWithoutDetails::date.name))
+            .limit(MAIN_PER_REQUEST)
+            .toList()
+    }
+
+    override suspend fun getSponsoredPosts(): List<PostWithoutDetails> {
+        return postCollection.withDocumentClass<PostWithoutDetails>()
+            .find(Filters.eq(PostWithoutDetails::isSponsored.name, true))
+            .sort(descending(PostWithoutDetails::date.name))
+            .limit(2)
             .toList()
     }
 

@@ -30,7 +30,7 @@ import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
 
 @Composable
-fun Posts(
+fun PostsView(
     breakpoint: Breakpoint,
     title: String? = null,
     posts: List<PostWithoutDetails>,

@@ -28,14 +28,17 @@ fun AdminPageLayout(content: @Composable () -> Unit) {
             })
 
             if (overFlowMenuOpenned) {
-                OverFlowSidePanel {
-                    overFlowMenuOpenned = false
-                }
+                OverFlowSidePanel(content = {
+                    NavigationItems()
+                }, onMenuClose = {
+                    overFlowMenuOpenned = !overFlowMenuOpenned
+
+                })
+                content()
             }
-            content()
+
+
         }
-
-
     }
 }
 

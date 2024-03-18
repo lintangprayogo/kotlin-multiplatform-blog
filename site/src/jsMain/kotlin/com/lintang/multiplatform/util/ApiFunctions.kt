@@ -226,7 +226,7 @@ suspend fun subscribeNews(newsLater: NewsLater): String {
     return try {
         val body = Json.encodeToString(newsLater).encodeToByteArray()
         val result = window.api.tryPost("subscribenews", body = body)
-        return result?.decodeToString().parseData()
+        return result?.decodeToString().parseData<String>().replace("\"\"","")
     } catch (e: Exception) {
         e.message ?: ""
     }

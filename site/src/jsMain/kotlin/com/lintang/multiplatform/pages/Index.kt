@@ -15,6 +15,7 @@ import com.lintang.multiplatform.models.Constants.POST_PER_REQUEST
 import com.lintang.multiplatform.models.PostWithoutDetails
 import com.lintang.multiplatform.section.HeaderSection
 import com.lintang.multiplatform.section.MainSection
+import com.lintang.multiplatform.section.NewsLaterSection
 import com.lintang.multiplatform.section.PostSection
 import com.lintang.multiplatform.section.SponsoredPostsSections
 import com.lintang.multiplatform.util.getLastestPost
@@ -227,6 +228,8 @@ fun HomePage() {
             },
             showMoreVisibility = popularShowMoreVisibility
         )
+
+        NewsLaterSection(breakpoint)
 
 
 

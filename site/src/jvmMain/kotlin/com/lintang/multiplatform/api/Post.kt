@@ -8,6 +8,8 @@ import com.lintang.multiplatform.models.Constants.POST_ID_PARAM
 import com.lintang.multiplatform.models.Constants.SKIP_PARAM
 import com.lintang.multiplatform.models.Constants.TITLE_PARAM
 import com.lintang.multiplatform.models.Post
+import com.lintang.multiplatform.utils.getBody
+import com.lintang.multiplatform.utils.setBody
 import com.varabyte.kobweb.api.Api
 import com.varabyte.kobweb.api.ApiContext
 import com.varabyte.kobweb.api.data.getValue
@@ -131,11 +133,3 @@ suspend fun getPostById(context: ApiContext) {
     }
 }
 
-inline fun <reified T> Request.getBody(): T? {
-    return body?.decodeToString()?.let { return Json.decodeFromString(it) }
-}
-
-inline fun <reified T> Response.setBody(data: T) {
-    setBodyText(Json.encodeToString(data))
-
-}

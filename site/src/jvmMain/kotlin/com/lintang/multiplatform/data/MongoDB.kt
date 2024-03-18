@@ -2,6 +2,7 @@ package com.lintang.multiplatform.data
 
 import com.lintang.multiplatform.models.Constants.MAIN_PER_REQUEST
 import com.lintang.multiplatform.models.Constants.POST_PER_REQUEST
+import com.lintang.multiplatform.models.NewsLater
 import com.lintang.multiplatform.models.Post
 import com.lintang.multiplatform.models.PostWithoutDetails
 import com.lintang.multiplatform.models.User
@@ -31,6 +32,7 @@ class MongoDB(private val context: InitApiContext) : MongoRepository {
     private val database = client.getDatabase(Constants.DATABASE_NAME)
     private val userCollection = database.getCollection<User>("users")
     private val postCollection = database.getCollection<Post>("posts")
+    private val newsLaterCollection = database.getCollection<NewsLater>("newslaters")
 
     override suspend fun checkIfUserExist(user: User): User? {
         return try {
@@ -153,5 +155,20 @@ class MongoDB(private val context: InitApiContext) : MongoRepository {
 
     override suspend fun getPosById(id: String): Post? {
         return postCollection.find(Filters.eq(Post::_id.name,id)).firstOrNull()
+    }
+
+    override suspend fun subscribe(newsLater: NewsLater): String {
+        val result =
+            newsLaterCollection.find(Filters.eq(NewsLater::email.name, newsLater.email)).toList()
+        return if (result.isNotEmpty()){
+            "you're already subscribed"
+        }else{
+            val newEmail = newsLaterCollection.insertOne(newsLater).wasAcknowledged()
+            if (newEmail){
+                "Successfully Subscribed"
+            }else{
+                "Something went wrong. Please try again later."
+            }
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.lintang.multiplatform.data
 
+import com.lintang.multiplatform.models.NewsLater
 import com.lintang.multiplatform.models.Post
 import com.lintang.multiplatform.models.PostWithoutDetails
 import com.lintang.multiplatform.models.User
@@ -17,4 +18,5 @@ interface MongoRepository {
      suspend fun deleteSelectedPosts(postIds: List<String>): Boolean
     suspend fun updatePost(post: Post): Boolean
     suspend fun getSponsoredPosts(): List<PostWithoutDetails>
+    suspend fun subscribe(newsLater: NewsLater):String
 }

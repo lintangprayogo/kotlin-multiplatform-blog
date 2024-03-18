@@ -131,3 +131,9 @@ fun logout() {
     localStorage["userId"] = ""
     localStorage["username"] = ""
 }
+
+val emailRegex = Regex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\$")
+
+fun isEmailValid(email: String): Boolean {
+    return emailRegex.matches(email)
+}

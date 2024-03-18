@@ -6,6 +6,7 @@ import com.lintang.multiplatform.models.Constants.AUTHOR_PARAM
 import com.lintang.multiplatform.models.Constants.POST_ID_PARAM
 import com.lintang.multiplatform.models.Constants.SKIP_PARAM
 import com.lintang.multiplatform.models.Constants.TITLE_PARAM
+import com.lintang.multiplatform.models.NewsLater
 import com.lintang.multiplatform.models.Post
 import com.lintang.multiplatform.models.RandomJoke
 import com.lintang.multiplatform.models.User
@@ -219,6 +220,16 @@ suspend fun getPostById(id: String): ApiResponse {
         ApiResponse.Error(e.message ?: "")
     }
 
+}
+
+suspend fun subscribeNews(newsLater: NewsLater): String {
+    return try {
+        val body = Json.encodeToString(newsLater).encodeToByteArray()
+        val result = window.api.tryPost("subscribenews", body = body)
+        return result?.decodeToString().parseData()
+    } catch (e: Exception) {
+        e.message ?: ""
+    }
 }
 
 inline fun <reified T> String?.parseData(): T {

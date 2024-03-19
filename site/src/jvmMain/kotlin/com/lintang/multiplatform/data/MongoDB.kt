@@ -1,5 +1,6 @@
 package com.lintang.multiplatform.data
 
+import com.lintang.multiplatform.models.Category
 import com.lintang.multiplatform.models.Constants.MAIN_PER_REQUEST
 import com.lintang.multiplatform.models.Constants.POST_PER_REQUEST
 import com.lintang.multiplatform.models.NewsLater
@@ -147,6 +148,18 @@ class MongoDB(private val context: InitApiContext) : MongoRepository {
         val regexQuery = title.toRegex(RegexOption.IGNORE_CASE)
         return postCollection.withDocumentClass<PostWithoutDetails>()
             .find(Filters.regex(PostWithoutDetails::title.name, regexQuery.toPattern()))
+            .sort(descending(PostWithoutDetails::date.name))
+            .skip(skip)
+            .limit(POST_PER_REQUEST)
+            .toList()
+    }
+
+    override suspend fun searchPostByCategory(
+        skip: Int,
+        category: Category
+    ): List<PostWithoutDetails> {
+        return postCollection.withDocumentClass<PostWithoutDetails>()
+            .find(Filters.eq(PostWithoutDetails::category.name, category))
             .sort(descending(PostWithoutDetails::date.name))
             .skip(skip)
             .limit(POST_PER_REQUEST)

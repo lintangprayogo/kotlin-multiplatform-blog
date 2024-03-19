@@ -2,7 +2,9 @@ package com.lintang.multiplatform.util
 
 import com.lintang.multiplatform.models.ApiListResponse
 import com.lintang.multiplatform.models.ApiResponse
+import com.lintang.multiplatform.models.Category
 import com.lintang.multiplatform.models.Constants.AUTHOR_PARAM
+import com.lintang.multiplatform.models.Constants.CATEGORY_PARAM
 import com.lintang.multiplatform.models.Constants.POST_ID_PARAM
 import com.lintang.multiplatform.models.Constants.SKIP_PARAM
 import com.lintang.multiplatform.models.Constants.TITLE_PARAM
@@ -179,7 +181,7 @@ suspend fun getSponsoredPost(
     }
 }
 
-suspend fun searchPost(
+suspend fun searchPostByTitle(
     title: String,
     skip: Int, onSuccess: (response: ApiListResponse) -> Unit,
     onError: (Exception) -> Unit
@@ -193,6 +195,25 @@ suspend fun searchPost(
         onError(e)
     }
 }
+
+suspend fun searchPostByCategory(
+    category: Category,
+    skip: Int,
+    onSuccess: (response: ApiListResponse) -> Unit,
+    onError: (Exception) -> Unit
+) {
+    return try {
+        val result = window.api.tryGet(
+            apiPath = "searchpostsbycategory?$SKIP_PARAM=$skip&$CATEGORY_PARAM=$category"
+        )?.decodeToString().parseData<ApiListResponse>()
+
+        onSuccess(result)
+    } catch (e: Exception) {
+        onError(e)
+    }
+}
+
+
 
 suspend fun deleteSelectedPost(selectedPosts: List<String>): Boolean {
     return try {

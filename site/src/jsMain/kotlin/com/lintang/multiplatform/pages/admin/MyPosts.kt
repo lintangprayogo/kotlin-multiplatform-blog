@@ -25,7 +25,7 @@ import com.lintang.multiplatform.util.getMyPost
 import com.lintang.multiplatform.util.isUserLoggedIn
 import com.lintang.multiplatform.util.noBorder
 import com.lintang.multiplatform.util.parseSelectedPostList
-import com.lintang.multiplatform.util.searchPost
+import com.lintang.multiplatform.util.searchPostByTitle
 import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.Visibility
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
@@ -91,7 +91,7 @@ fun MyPostScreen() {
     LaunchedEffect(key1 = context.route) {
         postSkip = 0
         if (hasParams) {
-            searchPost(skip = postSkip, onSuccess = {
+            searchPostByTitle(skip = postSkip, onSuccess = {
                 if (it is ApiListResponse.Success) {
                     myposts.clear()
                     myposts.addAll(it.data)
@@ -227,7 +227,7 @@ fun MyPostScreen() {
                 onShowMore = {
                     scope.launch {
                         if (hasParams) {
-                            searchPost(skip = 0, onSuccess = {
+                            searchPostByTitle(skip = 0, onSuccess = {
                                 if (it is ApiListResponse.Success) {
                                     if (it.data.isNotEmpty()) {
                                         myposts.addAll(it.data)

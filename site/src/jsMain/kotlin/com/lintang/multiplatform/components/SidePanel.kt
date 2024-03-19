@@ -86,6 +86,7 @@ fun OverFlowSidePanel(onMenuClose: () -> Unit, content: @Composable () -> Unit) 
     var translateX by remember { mutableStateOf((-100).percent) }
     var opacity by remember { mutableStateOf((0).percent) }
     val scope = rememberCoroutineScope()
+    val context = rememberPageContext()
 
     LaunchedEffect(key1 = breakPoint) {
         translateX = 0.percent
@@ -138,7 +139,10 @@ fun OverFlowSidePanel(onMenuClose: () -> Unit, content: @Composable () -> Unit) 
                     size = IconSize.XL
                 )
                 Image(
-                    modifier = Modifier.width(80.px),
+                    modifier = Modifier.width(80.px).cursor(Cursor.Pointer)
+                        .onClick {
+                            context.router.navigateTo(Screen.Home.route)
+                        },
                     src = Res.Image.logo,
                     description = "logo image"
                 )
@@ -151,6 +155,7 @@ fun OverFlowSidePanel(onMenuClose: () -> Unit, content: @Composable () -> Unit) 
 
 @Composable
 private fun SidePanelInternal() {
+    val context = rememberPageContext()
 
     Column(
         modifier = Modifier.padding(leftRight = 40.px, top = 50.px)
@@ -161,7 +166,12 @@ private fun SidePanelInternal() {
             .zIndex(9) // urutan agar paling bawah dalam stack
     ) {
         Image(
-            modifier = Modifier.margin(bottom = 60.px),
+            modifier = Modifier
+                .margin(bottom = 60.px)
+                .cursor(Cursor.Pointer)
+                .onClick {
+                    context.router.navigateTo(Screen.Home.route)
+                },
             src = Res.Image.logo,
             description = "Logo Image"
         )

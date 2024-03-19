@@ -5,18 +5,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.lintang.multiplatform.Screen
 import com.lintang.multiplatform.components.CategoryNavigationItems
 import com.lintang.multiplatform.components.SearchBar
 import com.lintang.multiplatform.models.Category
 import com.lintang.multiplatform.models.Theme
-import com.lintang.multiplatform.style.CategoryItemStyle
-import com.lintang.multiplatform.util.Constants.FONT_FAMILY
 import com.lintang.multiplatform.util.Constants.HEADER_HEIGHT
 import com.lintang.multiplatform.util.Constants.PAGE_WIDTH
+import com.lintang.multiplatform.util.Id
 import com.lintang.multiplatform.util.Res
 import com.varabyte.kobweb.compose.css.Cursor
-import com.varabyte.kobweb.compose.css.FontWeight
-import com.varabyte.kobweb.compose.css.TextDecorationLine
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.foundation.layout.Spacer
@@ -27,29 +25,28 @@ import com.varabyte.kobweb.compose.ui.modifiers.background
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.cursor
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
-import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
-import com.varabyte.kobweb.compose.ui.modifiers.fontSize
-import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
 import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
-import com.varabyte.kobweb.compose.ui.modifiers.textDecorationLine
 import com.varabyte.kobweb.compose.ui.modifiers.width
+import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.icons.fa.FaBars
 import com.varabyte.kobweb.silk.components.icons.fa.FaXmark
 import com.varabyte.kobweb.silk.components.icons.fa.IconSize
-import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
-import com.varabyte.kobweb.silk.components.style.toModifier
+import kotlinx.browser.document
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
+import org.w3c.dom.HTMLInputElement
 
 @Composable
 fun HeaderSection(
     breakpoint: Breakpoint,
-    onMenuOpen: () -> Unit,
+    logo: String = Res.Image.logo,
+    selectedCategory: Category? = null,
+    onMenuOpen: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -64,7 +61,12 @@ fun HeaderSection(
                 .maxWidth(PAGE_WIDTH.px),
             contentAlignment = Alignment.TopCenter
         ) {
-            Header(breakpoint = breakpoint, onMenuOpen = onMenuOpen)
+            Header(
+                breakpoint = breakpoint,
+                selectedCategory = selectedCategory,
+                logo = logo,
+                onMenuOpen = onMenuOpen,
+            )
         }
     }
 }
@@ -72,9 +74,12 @@ fun HeaderSection(
 @Composable
 fun Header(
     breakpoint: Breakpoint,
+    logo: String,
+    selectedCategory: Category?,
     onMenuOpen: () -> Unit
 ) {
     var fullSearchBarOpened by remember { mutableStateOf(false) }
+    val context = rememberPageContext()
 
     Row(
         modifier = Modifier.fillMaxWidth(if (breakpoint > Breakpoint.MD) 80.percent else 90.percent)
@@ -113,14 +118,14 @@ fun Header(
                     .width(if (breakpoint >= Breakpoint.SM) 100.px else 70.px)
                     .cursor(Cursor.Pointer)
                     .onClick {
-
+                        context.router.navigateTo(Screen.Home.route)
                     },
-                src = Res.Image.logo
+                src = logo
             )
         }
 
         if (breakpoint >= Breakpoint.LG) {
-            CategoryNavigationItems(false)
+            CategoryNavigationItems(false, selectedCategory )
         }
 
         Spacer()
@@ -128,7 +133,8 @@ fun Header(
             breakpoint = breakpoint,
             fullWidth = fullSearchBarOpened,
             onEnterClick = {
-
+                val title = (document.getElementById(Id.adminSearchBar) as HTMLInputElement).value
+                context.router.navigateTo(Screen.SearchPage.searchPostByTitle(title))
             }, onSearchIconClick = {
                 fullSearchBarOpened = it
             },

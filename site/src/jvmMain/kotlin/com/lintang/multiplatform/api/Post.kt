@@ -3,7 +3,9 @@ package com.lintang.multiplatform.api
 import com.lintang.multiplatform.data.MongoDB
 import com.lintang.multiplatform.models.ApiListResponse
 import com.lintang.multiplatform.models.ApiResponse
+import com.lintang.multiplatform.models.Category
 import com.lintang.multiplatform.models.Constants.AUTHOR_PARAM
+import com.lintang.multiplatform.models.Constants.CATEGORY_PARAM
 import com.lintang.multiplatform.models.Constants.POST_ID_PARAM
 import com.lintang.multiplatform.models.Constants.SKIP_PARAM
 import com.lintang.multiplatform.models.Constants.TITLE_PARAM
@@ -13,11 +15,6 @@ import com.lintang.multiplatform.utils.setBody
 import com.varabyte.kobweb.api.Api
 import com.varabyte.kobweb.api.ApiContext
 import com.varabyte.kobweb.api.data.getValue
-import com.varabyte.kobweb.api.http.Request
-import com.varabyte.kobweb.api.http.Response
-import com.varabyte.kobweb.api.http.setBodyText
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import org.bson.codecs.ObjectIdGenerator
 
 @Api(routeOverride = "addpost")
@@ -111,6 +108,19 @@ suspend fun searchPostByTitle(context: ApiContext) {
         val skip = context.req.params[SKIP_PARAM]?.toInt() ?: 0
         val title: String = context.req.params[TITLE_PARAM] ?: ""
         val result = context.data.getValue<MongoDB>().searchPostByTitle(title = title, skip = skip)
+        context.res.setBody(ApiListResponse.Success(result))
+    } catch (e: Exception) {
+        context.res.setBody(ApiListResponse.Error(e.message ?: "unknown error"))
+    }
+}
+
+@Api(routeOverride = "searchpostsbycategory")
+suspend fun searchPostByCategory(context: ApiContext) {
+    try {
+        val skip = context.req.params[SKIP_PARAM]?.toInt() ?: 0
+        val category = Category.valueOf(context.req.params[CATEGORY_PARAM] ?: Category.Design.name)
+        val result =
+            context.data.getValue<MongoDB>().searchPostByCategory(skip = skip, category = category)
         context.res.setBody(ApiListResponse.Success(result))
     } catch (e: Exception) {
         context.res.setBody(ApiListResponse.Error(e.message ?: "unknown error"))

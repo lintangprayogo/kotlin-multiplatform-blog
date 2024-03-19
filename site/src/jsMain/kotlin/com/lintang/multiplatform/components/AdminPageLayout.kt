@@ -34,10 +34,9 @@ fun AdminPageLayout(content: @Composable () -> Unit) {
                     overFlowMenuOpenned = !overFlowMenuOpenned
 
                 })
-                content()
             }
 
-
+            content()
         }
     }
 }

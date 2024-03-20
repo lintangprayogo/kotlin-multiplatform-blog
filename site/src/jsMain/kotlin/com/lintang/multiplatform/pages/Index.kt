@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import com.lintang.multiplatform.Screen
 import com.lintang.multiplatform.components.CategoryNavigationItems
 import com.lintang.multiplatform.components.OverFlowSidePanel
 import com.lintang.multiplatform.models.ApiListResponse
@@ -28,6 +29,7 @@ import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.core.Page
+import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
 import kotlinx.coroutines.launch
 
@@ -48,6 +50,7 @@ fun HomePage() {
 
     val sponsoredPosts = remember { mutableStateListOf<PostWithoutDetails>() }
     val scope = rememberCoroutineScope()
+    val context = rememberPageContext()
 
     LaunchedEffect(Unit) {
         getMainPost(
@@ -152,6 +155,7 @@ fun HomePage() {
             title = "Latest Post",
             posts = latestPosts,
             onDetail = {
+                context.router.navigateTo(Screen.PostPage.editPostId(it))
             },
             showMore = {
                 scope.launch {
@@ -190,7 +194,9 @@ fun HomePage() {
         SponsoredPostsSections(
             breakpoint = breakpoint,
             posts = sponsoredPosts,
-            onDetail = {}
+            onDetail = {
+                context.router.navigateTo(Screen.PostPage.editPostId(it))
+            }
         )
 
         PostSection(
@@ -198,6 +204,7 @@ fun HomePage() {
             title = "Popular Post",
             posts = popularPosts,
             onDetail = {
+                context.router.navigateTo(Screen.PostPage.editPostId(it))
             },
             showMore = {
                 scope.launch {

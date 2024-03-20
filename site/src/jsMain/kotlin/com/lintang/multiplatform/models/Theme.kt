@@ -36,6 +36,10 @@ enum class Theme(val hex: String, var rgb: CSSColorValue) {
         hex = "#000000",
         rgb = Color.rgba(r = 0, g = 0, b = 0, a = 0.5f)
     ),
+    Black(
+        hex = "#000000",
+        rgb = Color.rgb(r = 0, g = 0, b = 0)
+    ),
     White(
         hex = "#FFFFFF",
         rgb = Color.rgb(r = 255, g = 255, b = 255)

@@ -12,7 +12,6 @@ import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
-import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
@@ -68,7 +67,6 @@ fun MainPostContent(
                 PostPreview(
                     post = post, darkTheme = true,
                     thumbnailHeight = 640.px,
-                    isSameWidth = false
                 )
             }
             Column(
@@ -92,14 +90,12 @@ fun MainPostContent(
                     PostPreview(
                         post = posts[1],
                         darkTheme = true,
-                        isSameWidth = false
                     )
                 }
                 Box(modifier = Modifier.margin(left = 10.px)) {
                     PostPreview(
                         post = posts[2],
                         darkTheme = true,
-                        isSameWidth = false
                     )
                 }
             } else if (posts.isNotEmpty()) {
@@ -107,7 +103,6 @@ fun MainPostContent(
                     PostPreview(
                         post = post,
                         darkTheme = true,
-                        isSameWidth = false
                     )
                 }
             }

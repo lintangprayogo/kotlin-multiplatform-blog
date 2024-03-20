@@ -61,7 +61,6 @@ fun PostPreview(
     selectable: Boolean = false,
     darkTheme: Boolean = false,
     isVertical: Boolean = true,
-    isSameWidth: Boolean = true,
     thumbnailHeight: CSSSizeValue<CSSUnit.px> = 320.px,
     titleMaxLines: Int = 2,
     titleColor: CSSColorValue = Colors.Black,
@@ -81,7 +80,6 @@ fun PostPreview(
                 titleMaxLines = titleMaxLines,
                 titleColor = titleColor,
                 isVertical = isVertical,
-                isSameWidth = isSameWidth,
             )
         }
     } else {
@@ -123,7 +121,6 @@ fun PostPreview(
                 thumbnailHeight = thumbnailHeight,
                 titleMaxLines = titleMaxLines,
                 isVertical = isVertical,
-                isSameWidth = isSameWidth,
                 titleColor = titleColor,
             )
         }
@@ -142,14 +139,12 @@ fun PostContent(
     titleMaxLines: Int = 2,
     titleColor: CSSColorValue,
     isVertical: Boolean,
-    isSameWidth: Boolean,
 ) {
     Image(
         modifier = Modifier
             .margin(bottom = if (darkTheme) 20.px else 16.px)
             .height(thumbnailHeight)
             .fillMaxWidth()
-            .thenIf(condition = isSameWidth, Modifier.maxWidth(thumbnailHeight))
             .objectFit(ObjectFit.Fill),
         src = post.thumbnail,
         description = "post thumbnail"
@@ -158,6 +153,7 @@ fun PostContent(
         modifier = Modifier.thenIf(
             condition = !isVertical,
             other = Modifier.margin(left = 20.px)
+                .fillMaxWidth()
         )
     ) {
         SpanText(

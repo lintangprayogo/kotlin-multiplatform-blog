@@ -29,5 +29,7 @@ sealed class Screen(val route: String) {
     }
 
 
-
+    data object PostPage : Screen(route = "/posts/post") {
+        fun editPostId(postId: String) = "$route?$POST_ID_PARAM=$postId"
+    }
 }

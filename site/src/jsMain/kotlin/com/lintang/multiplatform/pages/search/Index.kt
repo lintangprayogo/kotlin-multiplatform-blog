@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import com.lintang.multiplatform.Screen
 import com.lintang.multiplatform.components.CategoryNavigationItems
 import com.lintang.multiplatform.components.LoadingIndicator
 import com.lintang.multiplatform.components.OverFlowSidePanel
@@ -149,8 +150,11 @@ fun SearchPage() {
                 )
             }
 
-            PostSection(breakpoint = breakpoint, posts = searchPost, onDetail = {
-
+            PostSection(
+                breakpoint = breakpoint,
+                posts = searchPost,
+                onDetail = {
+                    context.router.navigateTo(Screen.PostPage.editPostId(it))
             }, showMore = {
                 scope.launch {
                     if (hasCategoryParam) {

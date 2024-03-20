@@ -104,7 +104,6 @@ private fun SponsoredPost(
                     titleMaxLines = 1,
                     titleColor = Theme.Sponsored.rgb,
                     thumbnailHeight = if (breakpoint > Breakpoint.MD) 200.px else 300.px,
-                    isSameWidth = breakpoint < Breakpoint.LG,
                     onDetail = onDetail
                 )
             }

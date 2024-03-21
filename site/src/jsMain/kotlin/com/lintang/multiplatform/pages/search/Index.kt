@@ -18,6 +18,7 @@ import com.lintang.multiplatform.models.Constants
 import com.lintang.multiplatform.models.Constants.CATEGORY_PARAM
 import com.lintang.multiplatform.models.Constants.TITLE_PARAM
 import com.lintang.multiplatform.models.PostWithoutDetails
+import com.lintang.multiplatform.section.FooterSection
 import com.lintang.multiplatform.section.HeaderSection
 import com.lintang.multiplatform.section.PostSection
 import com.lintang.multiplatform.util.Constants.FONT_FAMILY
@@ -27,9 +28,12 @@ import com.lintang.multiplatform.util.searchPostByCategory
 import com.lintang.multiplatform.util.searchPostByTitle
 import com.varabyte.kobweb.compose.css.TextAlign
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
+import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
+import com.varabyte.kobweb.compose.foundation.layout.Spacer
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
@@ -116,7 +120,7 @@ fun SearchPage() {
     }
 
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -210,7 +214,8 @@ fun SearchPage() {
         } else {
             LoadingIndicator()
         }
-
+        Box(Modifier.weight(1f))
+        FooterSection()
 
     }
 

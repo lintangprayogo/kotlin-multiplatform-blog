@@ -7,6 +7,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.lintang.multiplatform.models.PostWithoutDetails
 import com.lintang.multiplatform.models.Theme
+import com.lintang.multiplatform.style.PostPreviewStyle
 import com.lintang.multiplatform.util.Constants.FONT_FAMILY
 import com.lintang.multiplatform.util.parseDateString
 import com.varabyte.kobweb.compose.css.CSSTransition
@@ -32,7 +33,6 @@ import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
 import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.margin
-import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.objectFit
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.overflow
@@ -40,10 +40,12 @@ import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.size
 import com.varabyte.kobweb.compose.ui.modifiers.textOverflow
 import com.varabyte.kobweb.compose.ui.modifiers.transition
+import com.varabyte.kobweb.compose.ui.modifiers.width
 import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.components.graphics.Image
+import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.components.text.SpanText
 import org.jetbrains.compose.web.css.CSSColorValue
 import org.jetbrains.compose.web.css.CSSSizeValue
@@ -70,7 +72,14 @@ fun PostPreview(
 ) {
     var checked by remember(selectable) { mutableStateOf(false) }
     if (!isVertical) {
-        Row(modifier.cursor(Cursor.Pointer)) {
+        Row(
+            PostPreviewStyle
+                .toModifier()
+                .then(modifier)
+                .fillMaxWidth()
+                .padding(bottom = 24.px)
+                .cursor(Cursor.Pointer)
+        ) {
             PostContent(
                 post = post,
                 darkTheme = darkTheme,
@@ -84,7 +93,9 @@ fun PostPreview(
         }
     } else {
         Column(
-            modifier = modifier
+            modifier = PostPreviewStyle
+                .toModifier()
+                .then(modifier)
                 .fillMaxWidth(
                     if (darkTheme || titleColor == Theme.Sponsored.rgb)
                         100.percent else 95.percent
@@ -145,7 +156,8 @@ fun PostContent(
             .margin(bottom = if (darkTheme) 20.px else 16.px)
             .height(thumbnailHeight)
             .fillMaxWidth()
-            .objectFit(ObjectFit.Fill),
+            .thenIf(!isVertical, Modifier.width((thumbnailHeight.value * 1.5).px))
+            .objectFit(ObjectFit.Contain),
         src = post.thumbnail,
         description = "post thumbnail"
     )

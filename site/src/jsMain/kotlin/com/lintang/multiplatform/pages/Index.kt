@@ -14,6 +14,7 @@ import com.lintang.multiplatform.components.OverFlowSidePanel
 import com.lintang.multiplatform.models.ApiListResponse
 import com.lintang.multiplatform.models.Constants.POST_PER_REQUEST
 import com.lintang.multiplatform.models.PostWithoutDetails
+import com.lintang.multiplatform.section.FooterSection
 import com.lintang.multiplatform.section.HeaderSection
 import com.lintang.multiplatform.section.MainSection
 import com.lintang.multiplatform.section.NewsLaterSection
@@ -24,6 +25,7 @@ import com.lintang.multiplatform.util.getMainPost
 import com.lintang.multiplatform.util.getPopularPost
 import com.lintang.multiplatform.util.getSponsoredPost
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
+import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
@@ -238,6 +240,8 @@ fun HomePage() {
 
         NewsLaterSection(breakpoint)
 
+        Box(Modifier.weight(1f))
+        FooterSection()
 
 
 

@@ -15,6 +15,7 @@ import com.lintang.multiplatform.models.ApiResponse
 import com.lintang.multiplatform.models.Constants.POST_ID_PARAM
 import com.lintang.multiplatform.models.Post
 import com.lintang.multiplatform.models.Theme
+import com.lintang.multiplatform.section.FooterSection
 import com.lintang.multiplatform.section.HeaderSection
 import com.lintang.multiplatform.util.Constants.FONT_FAMILY
 import com.lintang.multiplatform.util.Id
@@ -26,6 +27,7 @@ import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.css.TextAlign
 import com.varabyte.kobweb.compose.css.TextOverflow
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
+import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
@@ -118,7 +120,8 @@ fun PostPage() {
             }
 
         }
-
+        Box(Modifier.weight(1f))
+        FooterSection()
     }
 
 

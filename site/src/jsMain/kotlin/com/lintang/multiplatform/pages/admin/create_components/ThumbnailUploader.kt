@@ -1,8 +1,9 @@
+@file:Suppress("DEPRECATION")
+
 package com.lintang.multiplatform.pages.admin.create_components
 
 import androidx.compose.runtime.Composable
 import com.lintang.multiplatform.models.Theme
-import com.lintang.multiplatform.util.Constants
 import com.lintang.multiplatform.util.Constants.FONT_FAMILY
 import com.lintang.multiplatform.util.Id
 import com.lintang.multiplatform.util.noBorder
@@ -81,7 +82,7 @@ fun ThumbnailUploader(
                 .onClick {
                     document.loadDataUrlFromDisk(
                         accept = "image/png, image/jpeg",
-                        onLoaded = {
+                        onLoad = {
                             onThumbnailSelect(filename, it)
                         }
                     )

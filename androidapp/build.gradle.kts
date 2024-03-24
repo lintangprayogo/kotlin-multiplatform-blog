@@ -2,20 +2,21 @@
 plugins {
     alias(libs.plugins.com.android.application)
     alias(libs.plugins.org.jetbrains.kotlin.android)
+    alias(libs.plugins.mongodb.realm)
+    alias(libs.plugins.serialization.plugin)
 }
 
 android {
     namespace = "com.lintang.androidapp"
     compileSdk = 34
-
     defaultConfig {
-        applicationId = "com.lintang.androidapp"
+        applicationId =  "com.lintang.androidapp"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -31,11 +32,16 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+        kotlinOptions {
+            jvmTarget = "17"
+        }
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -45,10 +51,9 @@ android {
     }
     packaging {
         resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "/META-INF/**"
         }
     }
-    buildToolsVersion = "34.0.0"
 }
 
 dependencies {
@@ -66,4 +71,5 @@ dependencies {
     implementation(libs.mongodb.sync)
     implementation(libs.coil.compose)
     implementation(libs.kotlinx.serialization)
+    //implementation(project(":site"))
 }

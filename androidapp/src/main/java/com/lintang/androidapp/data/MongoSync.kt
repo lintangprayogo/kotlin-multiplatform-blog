@@ -1,5 +1,6 @@
 package com.lintang.androidapp.data
 
+import android.util.Log
 import com.lintang.androidapp.model.Post
 import com.lintang.androidapp.util.Constants.APP_ID
 import com.lintang.androidapp.util.RequestState
@@ -24,7 +25,10 @@ object MongoSync : MongoSyncRepository {
         if (user != null) {
             val config =
                 SyncConfiguration.Builder(user, setOf(Post::class)).initialSubscriptions {
-                    add(query = it.query(Post::class), name = "Blog Posts")
+                    add(
+                        query = it.query(Post::class),
+                        name = "BlogDatabase"
+                    )
                 }
                     .log(LogLevel.ALL)
                     .build()
@@ -36,16 +40,18 @@ object MongoSync : MongoSyncRepository {
     override fun readAllPosts(): Flow<RequestState<List<Post>>> {
         return if (user != null) {
             try {
+
                 realm.query(Post::class).asFlow().map { result ->
                     RequestState.Success(data = result.list)
                 }
+
             } catch (e: Exception) {
                 flow { emit(RequestState.Error(Throwable(e.message))) }
 
             }
 
         } else {
-            flow { emit(RequestState.Error(Throwable("Tidak Terautentikasi"))) }
+            flow { emit(RequestState.Error(Throwable("Something bad happen"))) }
         }
     }
 }

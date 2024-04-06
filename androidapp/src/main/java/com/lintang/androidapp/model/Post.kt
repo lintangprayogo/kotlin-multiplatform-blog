@@ -1,5 +1,6 @@
 package com.lintang.androidapp.model
 
+import com.lintang.shared.Category
 import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.annotations.PrimaryKey
 
@@ -12,7 +13,7 @@ open class Post : RealmObject {
     var subtitle: String = ""
     var thumbnail: String = ""
     var content: String = ""
-    var category: String = ""
+    var category:String =""
 }
 
 

@@ -1,6 +1,5 @@
 package com.lintang.androidapp.data
 
-import android.util.Log
 import com.lintang.androidapp.model.Post
 import com.lintang.androidapp.util.Constants.APP_ID
 import com.lintang.androidapp.util.RequestState
@@ -27,7 +26,7 @@ object MongoSync : MongoSyncRepository {
                 SyncConfiguration.Builder(user, setOf(Post::class)).initialSubscriptions {
                     add(
                         query = it.query(Post::class),
-                        name = "BlogDatabase"
+                        name = "Blog Post"
                     )
                 }
                     .log(LogLevel.ALL)

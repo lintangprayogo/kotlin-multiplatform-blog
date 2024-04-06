@@ -24,6 +24,7 @@ import coil.request.ImageRequest
 import com.lintang.androidapp.model.Post
 import com.lintang.androidapp.util.convertLongToDate
 import com.lintang.androidapp.util.decodeThumbnailImage
+import com.lintang.shared.Category
 
 @Composable
 fun PostCard(post: Post, onPostClick: (post: Post) -> Unit) {
@@ -82,7 +83,7 @@ fun PostCard(post: Post, onPostClick: (post: Post) -> Unit) {
                 )
                 SuggestionChip(onClick = { }, label = {
                     Text(
-                        text = post.category
+                        text =Category.valueOf(post.category).name
                     )
                 })
             }

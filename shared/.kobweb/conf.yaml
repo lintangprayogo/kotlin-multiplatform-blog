@@ -1,0 +1,18 @@
+site:
+  title: "BlogMultiplatform"
+
+server:
+  files:
+    dev:
+      contentRoot: "build/processedResources/js/main/public"
+      script: "build/dist/js/developmentExecutable/multiplatform.js"
+      api: "build/libs/multiplatform.jar"
+    prod:
+      script: "build/dist/js/productionExecutable/multiplatform.js"
+      siteRoot: ".kobweb/site"
+  cors:
+    hosts:
+      - name: "com.lintang.multiplatform"
+        schemes:
+          - "https"
+  port: 8080

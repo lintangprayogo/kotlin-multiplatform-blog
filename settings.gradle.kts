@@ -11,3 +11,4 @@ rootProject.name = "multiplatform"
 
 include(":site")
 include(":androidapp")
+include(":shared")

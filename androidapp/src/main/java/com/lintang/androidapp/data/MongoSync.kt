@@ -4,6 +4,7 @@ import com.lintang.androidapp.model.Post
 import com.lintang.androidapp.util.Constants.APP_ID
 import com.lintang.androidapp.util.RequestState
 import io.realm.kotlin.Realm
+import io.realm.kotlin.ext.query
 import io.realm.kotlin.log.LogLevel
 import io.realm.kotlin.mongodb.App
 import io.realm.kotlin.mongodb.sync.SyncConfiguration
@@ -41,6 +42,24 @@ object MongoSync : MongoSyncRepository {
             try {
 
                 realm.query(Post::class).asFlow().map { result ->
+                    RequestState.Success(data = result.list)
+                }
+
+            } catch (e: Exception) {
+                flow { emit(RequestState.Error(Throwable(e.message))) }
+
+            }
+
+        } else {
+            flow { emit(RequestState.Error(Throwable("Something bad happen"))) }
+        }
+    }
+
+    override fun searchByTitle(title: String): Flow<RequestState<List<Post>>> {
+        return if (user != null) {
+            try {
+                realm.query<Post>(query = "title CONTAINS[c] $0", title)
+                    .asFlow().map { result ->
                     RequestState.Success(data = result.list)
                 }
 

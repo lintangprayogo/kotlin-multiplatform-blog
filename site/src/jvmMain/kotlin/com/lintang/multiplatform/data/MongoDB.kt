@@ -31,9 +31,9 @@ fun initMongoDB(context: InitApiContext) {
 class MongoDB(private val context: InitApiContext) : MongoRepository {
     private val client = MongoClient.create("mongodb://localhost:27017")
     private val database = client.getDatabase(Constants.DATABASE_NAME)
-    private val userCollection = database.getCollection<User>("users")
-    private val postCollection = database.getCollection<Post>("posts")
-    private val newsLaterCollection = database.getCollection<NewsLater>("newslaters")
+    private val userCollection = database.getCollection<User>("User")
+    private val postCollection = database.getCollection<Post>("Post")
+    private val newsLaterCollection = database.getCollection<NewsLater>("Newslater")
 
     override suspend fun checkIfUserExist(user: User): User? {
         return try {

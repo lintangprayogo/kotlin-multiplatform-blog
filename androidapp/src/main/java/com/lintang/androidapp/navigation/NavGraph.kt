@@ -21,7 +21,6 @@ fun setUpNavGraph(navController: NavHostController) {
             var query by remember { mutableStateOf("") }
             var searchBarOpened by remember { mutableStateOf(false) }
             var active by remember { mutableStateOf(false) }
-
             HomeScreen(
                 posts = viewModel.allPosts.value,
                 searchPosts = viewModel.searchPosts.value,
@@ -44,6 +43,9 @@ fun setUpNavGraph(navController: NavHostController) {
                         active =false
                         viewModel.resetSearch()
                     }
+                },
+                onCategoryClick = {
+
                 }
             )
         }

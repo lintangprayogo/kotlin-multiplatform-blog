@@ -18,17 +18,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.lintang.androidapp.model.Post
 import com.lintang.androidapp.util.RequestState
+import com.lintang.androidapp.util.RequestState.Error
+import com.lintang.androidapp.util.RequestState.Idle
+import com.lintang.androidapp.util.RequestState.Loading
+import com.lintang.androidapp.util.RequestState.Success
 import com.lintang.androidapp.util.convertLongToDate
 import com.lintang.androidapp.util.decodeThumbnailImage
 import com.lintang.shared.Category
@@ -101,21 +104,43 @@ fun PostCard(post: Post, onPostClick: (post: Post) -> Unit) {
 }
 
 @Composable
-fun PostPreview(posts: RequestState<List<Post>>) {
-    if (posts is RequestState.Success) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            items(items = posts.data, key = { post: Post -> post._id }) { post ->
-                PostCard(post = post) {
+fun PostPreview(
+    topMargin: Dp,
+    posts: RequestState<List<Post>>,
+    hideMessage: Boolean = true,
+    ) {
+    when (posts) {
+        is Success -> {
+            if (posts.data.isNotEmpty()) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = topMargin)
+                        .padding(horizontal = 24.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(items = posts.data, key = { post: Post -> post._id }) { post ->
+                        PostCard(post = post) {
 
+                        }
+                    }
                 }
+            } else {
+                EmptyUi()
             }
         }
-    } else if (posts is RequestState.Error) {
-        Text(text = posts.throwable.message ?: "-", color = Color.Red, fontSize = 20.sp)
+
+        is Idle -> {
+            EmptyUi(hideMessage = hideMessage)
+        }
+
+        is Error -> {
+            EmptyUi(message = posts.throwable.message ?: "Unknown Error")
+        }
+
+        is Loading -> {
+            EmptyUi(loading = true)
+        }
     }
+
 }

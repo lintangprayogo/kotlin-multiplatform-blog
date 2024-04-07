@@ -19,7 +19,7 @@ import com.lintang.shared.Category
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun CategoryScreen(
-    category: com.lintang.shared.Category,
+    category: Category,
     posts: RequestState<List<Post>>,
     onPostClick: (Post) -> Unit,
     onBack: () -> Unit

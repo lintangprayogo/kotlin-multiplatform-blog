@@ -24,7 +24,6 @@ import com.lintang.shared.Category
 fun NavigationDrawer(
     drawerState: DrawerState,
     onCategoryClick: (Category) -> Unit,
-    selectedCategory: Category? = null,
     content: @Composable () -> Unit,
 ) {
     ModalNavigationDrawer(
@@ -64,7 +63,7 @@ fun NavigationDrawer(
                                 color = MaterialTheme.colorScheme.onSurface
                             )
                         },
-                        selected = category == selectedCategory,
+                        selected = false,
                         onClick = { onCategoryClick(category) })
                 }
             }

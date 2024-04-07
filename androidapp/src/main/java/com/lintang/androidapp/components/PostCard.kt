@@ -108,6 +108,7 @@ fun PostPreview(
     topMargin: Dp,
     posts: RequestState<List<Post>>,
     hideMessage: Boolean = true,
+    onPostClick: (Post) -> Unit,
     ) {
     when (posts) {
         is Success -> {
@@ -120,9 +121,7 @@ fun PostPreview(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     items(items = posts.data, key = { post: Post -> post._id }) { post ->
-                        PostCard(post = post) {
-
-                        }
+                        PostCard(post = post, onPostClick = onPostClick)
                     }
                 }
             } else {

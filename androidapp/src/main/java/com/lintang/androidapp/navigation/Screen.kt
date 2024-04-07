@@ -1,14 +1,15 @@
 package com.lintang.androidapp.navigation
 
+import com.lintang.androidapp.util.Constants
 
 
 sealed class Screen(val route: String) {
-    object HomeScreen : Screen(route = "home_screen")
-    object CategoryScreen : Screen(route = "category_screen/{category}") {
+    data object Home : Screen(route = "home_screen")
+    data object Category : Screen(route = "category_screen/{${Constants.CATEGORY_ARGUMENT}}") {
         fun passCategory(category: String): String = "category_screen/${category}"
     }
 
-    object DetailScreen : Screen(route = "detail_screen/{postId}") {
-        fun passId(id: Long): String = "detail_screen/$id"
+    data object Detail : Screen(route = "detail_screen/{${Constants.POST_ID_ARGUMENT}}") {
+        fun passId(id: String): String = "detail_screen/$id"
     }
 }

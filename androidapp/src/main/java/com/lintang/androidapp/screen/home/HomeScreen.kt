@@ -40,7 +40,8 @@ fun HomeScreen(
     onSearch: (String) -> Unit,
     onActiveChange: (Boolean) -> Unit,
     onCategoryClick: (Category) -> Unit,
-) {
+    onPostClick: (Post) -> Unit,
+    ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
@@ -52,7 +53,6 @@ fun HomeScreen(
             }
             onCategoryClick(it)
         },
-        selectedCategory = Category.Design
     ) {
         Scaffold(
             topBar = {
@@ -116,14 +116,23 @@ fun HomeScreen(
                             }
                         }
                     ) {
-                        PostPreview(posts = searchPosts, topMargin = 12.dp, hideMessage = true)
+                        PostPreview(
+                            topMargin = 12.dp,
+                            posts = searchPosts,
+                            hideMessage = true,
+                            onPostClick = onPostClick
+                        )
                     }
                 }
             },
 
             ) {
 
-            PostPreview(posts = posts, topMargin = it.calculateTopPadding())
+            PostPreview(
+                topMargin = it.calculateTopPadding(),
+                posts = posts,
+                onPostClick = onPostClick
+            )
         }
     }
 }

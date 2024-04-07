@@ -55,10 +55,10 @@ object MongoSync : MongoSyncRepository {
         }
     }
 
-    override fun searchByTitle(title: String): Flow<RequestState<List<Post>>> {
+    override fun searchByTitle(query: String): Flow<RequestState<List<Post>>> {
         return if (user != null) {
             try {
-                realm.query<Post>(query = "title CONTAINS[c] $0", title)
+                realm.query<Post>(query = "title CONTAINS[c] $0", query)
                     .asFlow().map { result ->
                     RequestState.Success(data = result.list)
                 }
@@ -68,6 +68,20 @@ object MongoSync : MongoSyncRepository {
 
             }
 
+        } else {
+            flow { emit(RequestState.Error(Throwable("Something bad happen"))) }
+        }
+    }
+
+    override fun searchByCategory(category: String): Flow<RequestState<List<Post>>> {
+        return if (user != null) {
+            try {
+                realm.query<Post>(query = "category == $0", category).asFlow().map { result ->
+                    RequestState.Success(data = result.list)
+                }
+            } catch (e: Exception) {
+                flow { emit(RequestState.Error(Throwable(e.message))) }
+            }
         } else {
             flow { emit(RequestState.Error(Throwable("Something bad happen"))) }
         }

@@ -7,5 +7,6 @@ import kotlinx.coroutines.flow.Flow
 interface MongoSyncRepository {
     fun configureTheRealm()
     fun readAllPosts(): Flow<RequestState<List<Post>>>
-    fun searchByTitle(title: String): Flow<RequestState<List<Post>>>
+    fun searchByTitle(query: String): Flow<RequestState<List<Post>>>
+    fun searchByCategory(category:String): Flow<RequestState<List<Post>>>
 }

@@ -16,13 +16,12 @@ import com.lintang.androidapp.screen.category.CategoryViewModel
 import com.lintang.androidapp.screen.detail.DetailScreen
 import com.lintang.androidapp.screen.home.HomeScreen
 import com.lintang.androidapp.screen.home.HomeViewModel
-import com.lintang.androidapp.util.Constants
 import com.lintang.androidapp.util.Constants.CATEGORY_ARGUMENT
 import com.lintang.androidapp.util.Constants.POST_ID_ARGUMENT
-import com.lintang.shared.Category
+import com.lintang.shared.Constants
 
 @Composable
-fun setUpNavGraph(navController: NavHostController) {
+fun SetUpNavGraph(navController: NavHostController) {
     NavHost(navController = navController, startDestination = Screen.Home.route) {
         composable(Screen.Home.route) {
             val viewModel: HomeViewModel = viewModel()
@@ -63,7 +62,7 @@ fun setUpNavGraph(navController: NavHostController) {
         }
         composable(
             Screen.Category.route,
-            arguments = listOf(navArgument(name = Constants.CATEGORY_ARGUMENT) {
+            arguments = listOf(navArgument(name = CATEGORY_ARGUMENT) {
                 type = NavType.StringType
             })
 
@@ -78,8 +77,8 @@ fun setUpNavGraph(navController: NavHostController) {
                 onBack = {
                     navController.popBackStack()
                 },
-                onPostClick = {
-                    navController.navigate(Screen.Detail.passId(it._id))
+                onPostClick = { post ->
+                    navController.navigate(Screen.Detail.passId(post._id))
                 }
             )
         }
@@ -90,7 +89,7 @@ fun setUpNavGraph(navController: NavHostController) {
             })
         ) {
             val postId = it.arguments?.getString(POST_ID_ARGUMENT)
-            DetailScreen(url = "http://10.0.2.2:8080/posts/post?${POST_ID_ARGUMENT}=$postId") {
+            DetailScreen(url = "http://10.0.2.2:8080/posts/post?${POST_ID_ARGUMENT}=$postId&&${Constants.SHOW_SECTIONS_PARAM}=false") {
                 navController.popBackStack()
             }
         }

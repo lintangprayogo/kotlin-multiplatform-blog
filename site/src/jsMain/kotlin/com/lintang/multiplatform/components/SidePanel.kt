@@ -16,6 +16,7 @@ import com.lintang.multiplatform.util.Constants.SIDE_PANEL_WIDTH
 import com.lintang.multiplatform.util.Id
 import com.lintang.multiplatform.util.Res
 import com.lintang.multiplatform.util.logout
+import com.lintang.shared.JsTheme
 import com.varabyte.kobweb.compose.css.CSSTransition
 import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.Overflow
@@ -29,6 +30,7 @@ import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.background
+import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.cursor
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxHeight
@@ -82,16 +84,17 @@ fun SidePanel(onMenuClick: () -> Unit) {
 
 @Composable
 fun OverFlowSidePanel(onMenuClose: () -> Unit, content: @Composable () -> Unit) {
-    val breakPoint = rememberBreakpoint()
-    var translateX by remember { mutableStateOf((-100).percent) }
-    var opacity by remember { mutableStateOf((0).percent) }
-    val scope = rememberCoroutineScope()
     val context = rememberPageContext()
+    val scope = rememberCoroutineScope()
+    val breakpoint = rememberBreakpoint()
 
-    LaunchedEffect(key1 = breakPoint) {
+    var translateX by remember { mutableStateOf((-100).percent) }
+    var opacity by remember { mutableStateOf(0.percent) }
+
+    LaunchedEffect(key1 = breakpoint) {
         translateX = 0.percent
         opacity = 100.percent
-        if (breakPoint > Breakpoint.MD) {
+        if (breakpoint > Breakpoint.MD) {
             scope.launch {
                 translateX = (-100).percent
                 opacity = 0.percent
@@ -100,24 +103,27 @@ fun OverFlowSidePanel(onMenuClose: () -> Unit, content: @Composable () -> Unit) 
             }
         }
     }
+
     Box(
-        Modifier
+        modifier = Modifier
             .fillMaxWidth()
             .height(100.vh)
+            .position(Position.Fixed)
+            .zIndex(9)
             .opacity(opacity)
-            .position(position = Position.Fixed).zIndex(9)
-            .transition(CSSTransition("opacity", duration = 300.ms))
-            .background(Theme.HalfBlack.rgb)
+            .transition(CSSTransition(property = "opacity", duration = 300.ms))
+            .backgroundColor(JsTheme.HalfBlack.rgb)
     ) {
         Column(
-            Modifier.padding(all = 24.px)
+            modifier = Modifier
+                .padding(all = 24.px)
                 .fillMaxHeight()
+                .width(if (breakpoint < Breakpoint.MD) 50.percent else 25.percent)
                 .translateX(translateX)
-                .width(if (breakPoint < Breakpoint.MD) 50.percent else 25.percent)
-                .transition(CSSTransition("translate", duration = 300.ms))
+                .transition(CSSTransition(property = "translate", duration = 300.ms))
                 .overflow(Overflow.Auto)
                 .scrollBehavior(ScrollBehavior.Smooth)
-                .background(Theme.Secondary.rgb)
+                .backgroundColor(JsTheme.Secondary.rgb)
         ) {
             Row(
                 modifier = Modifier.margin(bottom = 60.px, top = 24.px),
@@ -136,21 +142,20 @@ fun OverFlowSidePanel(onMenuClose: () -> Unit, content: @Composable () -> Unit) 
                                 onMenuClose()
                             }
                         },
-                    size = IconSize.XL
+                    size = IconSize.LG
                 )
                 Image(
-                    modifier = Modifier.width(80.px).cursor(Cursor.Pointer)
-                        .onClick {
-                            context.router.navigateTo(Screen.Home.route)
-                        },
+                    modifier = Modifier
+                        .width(80.px)
+                        .onClick { context.router.navigateTo(Screen.Home.route) }
+                        .cursor(Cursor.Pointer),
                     src = Res.Image.logo,
-                    description = "logo image"
+                    alt = "Logo Image"
                 )
             }
             content()
         }
     }
-
 }
 
 @Composable

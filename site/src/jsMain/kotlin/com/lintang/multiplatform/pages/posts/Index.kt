@@ -14,7 +14,6 @@ import com.lintang.multiplatform.components.OverFlowSidePanel
 import com.lintang.multiplatform.models.ApiResponse
 import com.lintang.multiplatform.models.Constants.POST_ID_PARAM
 import com.lintang.multiplatform.models.Post
-import com.lintang.multiplatform.models.Theme
 import com.lintang.multiplatform.section.FooterSection
 import com.lintang.multiplatform.section.HeaderSection
 import com.lintang.multiplatform.util.Constants.FONT_FAMILY
@@ -22,33 +21,35 @@ import com.lintang.multiplatform.util.Id
 import com.lintang.multiplatform.util.Res
 import com.lintang.multiplatform.util.getPostById
 import com.lintang.multiplatform.util.parseDateString
+import com.lintang.shared.Constants.SHOW_SECTIONS_PARAM
+import com.lintang.shared.JsTheme
 import com.varabyte.kobweb.compose.css.FontWeight
+import com.varabyte.kobweb.compose.css.ObjectFit
 import com.varabyte.kobweb.compose.css.Overflow
-import com.varabyte.kobweb.compose.css.TextAlign
 import com.varabyte.kobweb.compose.css.TextOverflow
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
-import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.color
-import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
+import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.id
 import com.varabyte.kobweb.compose.ui.modifiers.margin
-import com.varabyte.kobweb.compose.ui.modifiers.maxHeight
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
+import com.varabyte.kobweb.compose.ui.modifiers.objectFit
 import com.varabyte.kobweb.compose.ui.modifiers.overflow
-import com.varabyte.kobweb.compose.ui.modifiers.textAlign
 import com.varabyte.kobweb.compose.ui.modifiers.textOverflow
 import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.graphics.Image
+import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
 import kotlinx.browser.document
@@ -63,72 +64,72 @@ import org.w3c.dom.HTMLDivElement
 fun PostPage() {
     val context = rememberPageContext()
     val hasParams = remember(context.route) { context.route.params.containsKey(POST_ID_PARAM) }
-    var response by remember { mutableStateOf<ApiResponse>(ApiResponse.Idle) }
-    var overFlowMenuOpened by remember { mutableStateOf(false) }
+    var apiResponse by remember { mutableStateOf<ApiResponse>(ApiResponse.Idle) }
+    var overflowOpened by remember { mutableStateOf(false) }
     val breakpoint = rememberBreakpoint()
     val scope = rememberCoroutineScope()
+    var showSections by remember { mutableStateOf(true) }
 
     LaunchedEffect(context.route) {
+        showSections = if (context.route.params.containsKey(SHOW_SECTIONS_PARAM)) {
+            (context.route.params[SHOW_SECTIONS_PARAM] ?: "false").toBoolean()
+        } else {
+            false
+        }
         if (hasParams) {
-            response = getPostById(context.route.params[POST_ID_PARAM] ?: "")
+            apiResponse = getPostById(context.route.params[POST_ID_PARAM] ?: "")
         }
     }
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        if (overFlowMenuOpened) {
-            OverFlowSidePanel(content = {
-                CategoryNavigationItems(true, onMenuClose = {
-                    overFlowMenuOpened = false
-                })
-            }, onMenuClose = {
-                overFlowMenuOpened = !overFlowMenuOpened
-            })
-        }
+
+    if (overflowOpened) {
+        OverFlowSidePanel(
+            onMenuClose = { overflowOpened = false },
+            content = { CategoryNavigationItems(isVertical = true) }
+        )
+    }
+    if (showSections) {
         HeaderSection(
             breakpoint = breakpoint,
             logo = Res.Image.logo,
-            onMenuOpen = {
-                overFlowMenuOpened = true
-            },
-            selectedCategory = null,
+            onMenuOpen = { overflowOpened = true }
         )
-
-        when (response) {
-            is ApiResponse.Idle -> {
-                LoadingIndicator()
-            }
-
-            is ApiResponse.Success -> {
-                PostPageContent(post = (response as ApiResponse.Success).data)
-                scope.launch {
-                    delay(50)
-                    try {
-                        js("hljs.highlightAll()") as Unit
-                    } catch (e: Exception) {
-                        println("error highlight $e")
-                    }
-
+    }
+    when (apiResponse) {
+        is ApiResponse.Success -> {
+            PostPageContent(
+                post = (apiResponse as ApiResponse.Success).data,
+                breakpoint = breakpoint
+            )
+            scope.launch {
+                delay(50)
+                try {
+                    js("hljs.highlightAll()") as Unit
+                } catch (e: Exception) {
+                    println(e.message)
                 }
             }
-
-            is ApiResponse.Error -> {
-                ErrorView((response as ApiResponse.Error).message)
-            }
-
         }
-        Box(Modifier.weight(1f))
+
+        is ApiResponse.Idle -> {
+            LoadingIndicator()
+        }
+
+        is ApiResponse.Error -> {
+            ErrorView(message = (apiResponse as ApiResponse.Error).message)
+        }
+    }
+    if (showSections) {
         FooterSection()
     }
-
 
 }
 
 @Composable
-fun PostPageContent(post: Post) {
+fun PostPageContent(
+    post: Post,
+    breakpoint: Breakpoint
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -143,39 +144,41 @@ fun PostPageContent(post: Post) {
         SpanText(
             modifier = Modifier
                 .fillMaxWidth()
+                .color(JsTheme.HalfBlack.rgb)
                 .fontFamily(FONT_FAMILY)
-
-                .fontSize(14.px)
-                .color(Theme.HalfBlack.rgb),
+                .fontSize(14.px),
             text = post.date.parseDateString()
         )
         SpanText(
             modifier = Modifier
-                .fontFamily(FONT_FAMILY)
-                .margin(bottom = 20.px)
                 .fillMaxWidth()
-                .color(Theme.Black.rgb)
+                .margin(bottom = 20.px)
+                .color(Colors.Black)
+                .fontFamily(FONT_FAMILY)
                 .fontSize(40.px)
                 .fontWeight(FontWeight.Bold)
-                .textOverflow(TextOverflow.Ellipsis)
                 .overflow(Overflow.Hidden)
-                .textAlign(TextAlign.Center)
+                .textOverflow(TextOverflow.Ellipsis)
                 .styleModifier {
                     property("display", "-webkit-box")
-                    property("-webkit-line-clamp", "3")
-                    property("line-clamp", "3")
+                    property("-webkit-line-clamp", "2")
+                    property("line-clamp", "2")
                     property("-webkit-box-orient", "vertical")
                 },
             text = post.title
         )
         Image(
             modifier = Modifier
-                .margin(bottom = 48.px)
+                .margin(bottom = 40.px)
                 .fillMaxWidth()
-                .maxHeight(600.px),
-            src = post.thumbnail
+                .objectFit(ObjectFit.Cover)
+                .height(
+                    if (breakpoint <= Breakpoint.SM) 250.px
+                    else if (breakpoint <= Breakpoint.MD) 400.px
+                    else 600.px
+                ),
+            src = post.thumbnail,
         )
-
         Div(
             attrs = Modifier
                 .id(Id.postContent)

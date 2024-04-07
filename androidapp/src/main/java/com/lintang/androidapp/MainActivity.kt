@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.navigation.compose.rememberNavController
 import com.lintang.androidapp.ui.theme.AppTheme
-import com.lintang.androidapp.navigation.setUpNavGraph
+import com.lintang.androidapp.navigation.SetUpNavGraph
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -14,7 +14,7 @@ class MainActivity : ComponentActivity() {
         setContent {
           AppTheme {
                 val navController = rememberNavController()
-                setUpNavGraph(navController = navController)
+                SetUpNavGraph(navController = navController)
             }
         }
     }

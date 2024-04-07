@@ -39,7 +39,7 @@ fun HomeScreen(
     onQueryChange: (String) -> Unit,
     onSearch: (String) -> Unit,
     onActiveChange: (Boolean) -> Unit,
-    onCategoryClick: (com.lintang.shared.Category) -> Unit,
+    onCategoryClick: (Category) -> Unit,
     onPostClick: (Post) -> Unit,
     ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)

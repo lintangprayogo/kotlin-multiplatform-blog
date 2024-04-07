@@ -23,7 +23,7 @@ import com.lintang.shared.Category
 @Composable
 fun NavigationDrawer(
     drawerState: DrawerState,
-    onCategoryClick: (Category) -> Unit,
+    onCategoryClick: (com.lintang.shared.Category) -> Unit,
     content: @Composable () -> Unit,
 ) {
     ModalNavigationDrawer(
@@ -52,7 +52,7 @@ fun NavigationDrawer(
                         .padding(start = 20.dp, top = 12.dp),
                     text = "Categories"
                 )
-                Category.entries.forEach { category ->
+                com.lintang.shared.Category.entries.forEach { category ->
                     NavigationDrawerItem(
                         label = {
                             Text(

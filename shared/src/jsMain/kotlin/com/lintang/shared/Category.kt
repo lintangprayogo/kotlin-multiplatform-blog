@@ -1,5 +1,6 @@
 package com.lintang.shared
 
+import com.lintang.shared.CategoryColor
 import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.graphics.Color.Companion.rgb
 import com.varabyte.kobweb.compose.ui.graphics.Color.Companion.rgba

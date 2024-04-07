@@ -1,6 +1,5 @@
 package com.lintang.androidapp.model
 
-import com.lintang.shared.Category
 import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.annotations.PrimaryKey
 

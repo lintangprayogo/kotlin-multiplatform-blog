@@ -93,7 +93,7 @@ fun PostCard(post: Post, onPostClick: (post: Post) -> Unit) {
                 )
                 SuggestionChip(onClick = { }, label = {
                     Text(
-                        text =Category.valueOf(post.category).name
+                        text = com.lintang.shared.Category.valueOf(post.category).name
                     )
                 })
             }

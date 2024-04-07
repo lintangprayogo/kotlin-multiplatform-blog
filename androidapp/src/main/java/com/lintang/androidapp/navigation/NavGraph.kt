@@ -70,10 +70,10 @@ fun setUpNavGraph(navController: NavHostController) {
         ) {
             val viewModel: CategoryViewModel = viewModel()
             val category =
-                it.arguments?.getString(CATEGORY_ARGUMENT) ?: Category.Programming.name
+                it.arguments?.getString(CATEGORY_ARGUMENT) ?: com.lintang.shared.Category.Programming.name
 
             CategoryScreen(
-                category = Category.valueOf(category),
+                category = com.lintang.shared.Category.valueOf(category),
                 posts = viewModel.categoryPosts.value,
                 onBack = {
                     navController.popBackStack()

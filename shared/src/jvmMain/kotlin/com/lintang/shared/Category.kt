@@ -1,5 +1,6 @@
 package com.lintang.shared
 
+import com.lintang.shared.CategoryColor
 import kotlinx.serialization.Serializable
 
 @Serializable

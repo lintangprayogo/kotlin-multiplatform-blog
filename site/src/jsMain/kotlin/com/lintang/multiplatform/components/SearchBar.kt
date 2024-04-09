@@ -93,7 +93,7 @@ fun SearchBar(
                 attrs = Modifier
                     .id(Id.adminSearchBar)
                     .fillMaxSize()
-                    .color(if (darkTheme) Colors.White else Colors.Black)
+                    .color(Colors.Black)
                     .backgroundColor(Colors.Transparent)
                     .noBorder()
                     .onFocusIn { focused = true }

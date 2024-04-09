@@ -25,6 +25,8 @@ import com.lintang.multiplatform.util.Id
 import com.lintang.multiplatform.util.Res
 import com.lintang.multiplatform.util.searchPostByCategory
 import com.lintang.multiplatform.util.searchPostByTitle
+import com.lintang.shared.Category
+import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.TextAlign
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Box
@@ -35,6 +37,8 @@ import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
+import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
+import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.textAlign
 import com.varabyte.kobweb.core.Page
@@ -44,8 +48,9 @@ import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
 import kotlinx.browser.document
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.px
+import org.jetbrains.compose.web.css.vh
 import org.w3c.dom.HTMLInputElement
-import com.lintang.shared.Category
+
 @Page(routeOverride = "query")
 @Composable
 fun SearchPage() {
@@ -152,20 +157,36 @@ fun SearchPage() {
                 )
             }
 
-            PostSection(
-                breakpoint = breakpoint,
-                posts = searchPost,
-                onDetail = {
+            if (searchPost.isNotEmpty()) {
+                PostSection(breakpoint = breakpoint, posts = searchPost, onDetail = {
                     context.router.navigateTo(Screen.PostPage.getPostId(it))
-            }, showMore = {
-                scope.launch {
-                    if (hasCategoryParam) {
-                        searchPostByCategory(category = Category.valueOf(value),
-                            skip = postToSkip,
-                            onError = {
+                }, showMore = {
+                    scope.launch {
+                        if (hasCategoryParam) {
+                            searchPostByCategory(category = Category.valueOf(value),
+                                skip = postToSkip,
+                                onError = {
+                                    println(it)
+                                },
+                                onSuccess = {
+                                    if (it is ApiListResponse.Success) {
+                                        if (it.data.isNotEmpty()) {
+                                            searchPost.addAll(it.data)
+                                            if (it.data.size < Constants.POST_PER_REQUEST) isShowMoreVisibility =
+                                                false
+                                            postToSkip += Constants.POST_PER_REQUEST
+                                        } else {
+                                            isShowMoreVisibility = false
+                                        }
+                                    }
+                                    if (it is ApiListResponse.Error) {
+                                        println("SOMETHING BAD HAPPEN ${it.message}")
+                                    }
+                                })
+                        } else {
+                            searchPostByTitle(title = value, skip = postToSkip, onError = {
                                 println(it)
-                            },
-                            onSuccess = {
+                            }, onSuccess = {
                                 if (it is ApiListResponse.Success) {
                                     if (it.data.isNotEmpty()) {
                                         searchPost.addAll(it.data)
@@ -180,35 +201,28 @@ fun SearchPage() {
                                     println("SOMETHING BAD HAPPEN ${it.message}")
                                 }
                             })
-                    } else {
-                        searchPostByTitle(
-                            title = value,
-                            skip = postToSkip,
-                            onError = {
-                                println(it)
-                            },
-                            onSuccess = {
-                                if (it is ApiListResponse.Success) {
-                                    if (it.data.isNotEmpty()) {
-                                        searchPost.addAll(it.data)
-                                        if (it.data.size < Constants.POST_PER_REQUEST) isShowMoreVisibility =
-                                            false
-                                        postToSkip += Constants.POST_PER_REQUEST
-                                    } else {
-                                        isShowMoreVisibility = false
-                                    }
-                                }
-                                if (it is ApiListResponse.Error) {
-                                    println("SOMETHING BAD HAPPEN ${it.message}")
-                                }
-                            })
+                        }
+
                     }
 
+
+                }, showMoreVisibility = isShowMoreVisibility
+                )
+            } else {
+                Box(
+                    modifier = Modifier.height(100.vh),
+                    contentAlignment = Alignment.Center
+                ) {
+                    SpanText(
+                        modifier = Modifier
+                            .fontFamily(FONT_FAMILY)
+                            .fontSize(16.px)
+                            .fontWeight(FontWeight.Medium),
+                        text = "Post Not Found"
+                    )
                 }
+            }
 
-
-            }, showMoreVisibility = isShowMoreVisibility
-            )
         } else {
             LoadingIndicator()
         }

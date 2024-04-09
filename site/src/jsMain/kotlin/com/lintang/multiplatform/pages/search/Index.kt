@@ -223,6 +223,19 @@ fun SearchPage() {
                 }
             }
 
+        } else if (apiListResponse is ApiListResponse.Error) {
+            Box(
+                modifier = Modifier.height(100.vh),
+                contentAlignment = Alignment.Center
+            ) {
+                SpanText(
+                    modifier = Modifier
+                        .fontFamily(FONT_FAMILY)
+                        .fontSize(16.px)
+                        .fontWeight(FontWeight.Medium),
+                    text = (apiListResponse as ApiListResponse.Error).message
+                )
+            }
         } else {
             LoadingIndicator()
         }

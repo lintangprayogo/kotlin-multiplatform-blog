@@ -12,8 +12,11 @@ import com.lintang.multiplatform.util.applyStyle
 import com.lintang.multiplatform.util.getEditor
 import com.lintang.multiplatform.util.getSelectedText
 import com.lintang.multiplatform.util.noBorder
+import com.lintang.shared.JsTheme
 import com.varabyte.kobweb.compose.css.Cursor
+import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.css.Resize
+import com.varabyte.kobweb.compose.css.ScrollBehavior
 import com.varabyte.kobweb.compose.css.Visibility
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Row
@@ -35,8 +38,10 @@ import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxHeight
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.onKeyDown
+import com.varabyte.kobweb.compose.ui.modifiers.overflow
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.resize
+import com.varabyte.kobweb.compose.ui.modifiers.scrollBehavior
 import com.varabyte.kobweb.compose.ui.modifiers.visibility
 import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.compose.ui.toAttrs
@@ -168,13 +173,17 @@ fun Editors(editorsVisibile: Boolean) {
                 .fillMaxWidth()
                 .height(400.px)
                 .maxHeight(400.px)
-                .resize(Resize.None)
                 .margin(top = 8.px)
                 .padding(all = 20.px)
-                .backgroundColor(Theme.LightGray.rgb)
-                .border(4.px)
+                .backgroundColor(JsTheme.LightGray.rgb)
+                .borderRadius(r = 4.px)
+                .visibility(
+                    if (editorsVisibile) Visibility.Hidden
+                    else Visibility.Visible
+                )
+                .overflow(Overflow.Auto)
+                .scrollBehavior(ScrollBehavior.Smooth)
                 .noBorder()
-                .visibility(if (!editorsVisibile) Visibility.Visible else Visibility.Hidden)
                 .toAttrs()
         ) { }
 

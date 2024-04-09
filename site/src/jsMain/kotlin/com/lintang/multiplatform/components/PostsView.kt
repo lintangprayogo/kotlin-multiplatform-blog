@@ -61,7 +61,7 @@ fun PostsView(
             posts.forEach {
                 PostPreview(
                     post = it,
-                    selectable = selectable,
+                    selectableMode = selectable,
                     onSelect = onSelect,
                     onDeselect = onDeselect,
                     onDetail = onDetail

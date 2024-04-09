@@ -23,7 +23,8 @@ import org.jetbrains.compose.web.css.px
 
 fun MainSection(
     breakpoint: Breakpoint,
-    response: ApiListResponse
+    response: ApiListResponse,
+    onDetail: (id: String) -> Unit = {},
 ) {
     Box(
         Modifier
@@ -43,7 +44,11 @@ fun MainSection(
                 }
 
                 is ApiListResponse.Success -> {
-                    MainPostContent(breakpoint = breakpoint, posts = response.data)
+                    MainPostContent(
+                        breakpoint = breakpoint,
+                        posts = response.data,
+                        onDetail = onDetail
+                    )
                 }
 
                 is ApiListResponse.Error -> {
@@ -59,55 +64,63 @@ fun MainSection(
 @Composable
 fun MainPostContent(
     breakpoint: Breakpoint,
-    posts: List<PostWithoutDetails>
+    posts: List<PostWithoutDetails>,
+    onDetail: (id: String) -> Unit = {},
 ) {
-    Row(modifier = Modifier.fillMaxWidth(if (breakpoint > Breakpoint.MD) 80.percent else 90.percent)) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(
+                if (breakpoint > Breakpoint.MD) 80.percent
+                else 90.percent
+            )
+            .margin(topBottom = 50.px)
+    ) {
         if (breakpoint == Breakpoint.XL) {
-            posts.firstOrNull()?.let { post ->
-                PostPreview(
-                    post = post, darkTheme = true,
-                    thumbnailHeight = 640.px,
-                )
-            }
+            PostPreview(
+                post = posts.first(),
+                darkTheme = true,
+                thumbnailHeight = 640.px,
+                onDetail = { onDetail(posts.first()._id) }
+            )
             Column(
-                modifier =
-                Modifier
-                    .fillMaxWidth(45.percent)
-                    .margin(left = 50.px)
+                modifier = Modifier
+                    .fillMaxWidth(80.percent)
+                    .margin(left = 20.px)
             ) {
-                posts.drop(1).forEach { post ->
+                posts.drop(1).forEach { postWithoutDetails ->
                     PostPreview(
-                        post = post, darkTheme = true,
+                        modifier = Modifier.margin(bottom = 20.px),
+                        post = postWithoutDetails,
+                        darkTheme = true,
                         isVertical = false,
                         thumbnailHeight = 200.px,
-                        titleMaxLines = 1
+                        titleMaxLines = 1,
+                        onDetail = { onDetail(postWithoutDetails._id) }
                     )
                 }
+            }
+        } else if (breakpoint >= Breakpoint.LG) {
+            Box(modifier = Modifier.margin(right = 10.px)) {
+                PostPreview(
+                    post = posts.first(),
+                    darkTheme = true,
+                    onDetail = { onDetail(posts.first()._id) }
+                )
+            }
+            Box(modifier = Modifier.margin(left = 10.px)) {
+                PostPreview(
+                    post = posts[1],
+                    darkTheme = true,
+                    onDetail = { onDetail(posts[1]._id) }
+                )
             }
         } else {
-            if (posts.size >= 2 && breakpoint >= Breakpoint.LG) {
-                Box(modifier = Modifier.margin(right = 10.px)) {
-                    PostPreview(
-                        post = posts[1],
-                        darkTheme = true,
-                    )
-                }
-                Box(modifier = Modifier.margin(left = 10.px)) {
-                    PostPreview(
-                        post = posts[2],
-                        darkTheme = true,
-                    )
-                }
-            } else if (posts.isNotEmpty()) {
-                posts.firstOrNull()?.let { post ->
-                    PostPreview(
-                        post = post,
-                        darkTheme = true,
-                    )
-                }
-            }
-
+            PostPreview(
+                post = posts.first(),
+                darkTheme = true,
+                thumbnailHeight = 640.px,
+                onDetail = { onDetail(posts.first()._id) }
+            )
         }
-
     }
 }

@@ -150,14 +150,18 @@ fun HomePage() {
                 overFlowMenuOpened = true
             })
 
-        MainSection(breakpoint = breakpoint, response = mainPosts)
+        MainSection(breakpoint = breakpoint,
+            response = mainPosts,
+            onDetail = {
+                context.router.navigateTo(Screen.PostPage.getPostId(it))
+            })
 
         PostSection(
             breakpoint = breakpoint,
             title = "Latest Post",
             posts = latestPosts,
             onDetail = {
-                context.router.navigateTo(Screen.PostPage.editPostId(it))
+                context.router.navigateTo(Screen.PostPage.getPostId(it))
             },
             showMore = {
                 scope.launch {
@@ -197,7 +201,7 @@ fun HomePage() {
             breakpoint = breakpoint,
             posts = sponsoredPosts,
             onDetail = {
-                context.router.navigateTo(Screen.PostPage.editPostId(it))
+                context.router.navigateTo(Screen.PostPage.getPostId(it))
             }
         )
 
@@ -206,7 +210,7 @@ fun HomePage() {
             title = "Popular Post",
             posts = popularPosts,
             onDetail = {
-                context.router.navigateTo(Screen.PostPage.editPostId(it))
+                context.router.navigateTo(Screen.PostPage.getPostId(it))
             },
             showMore = {
                 scope.launch {

@@ -5,16 +5,16 @@ import org.jetbrains.compose.web.css.CSSColorValue
 
 enum class Theme(val hex: String, var rgb: CSSColorValue) {
     Primary(
-        hex = "#00A2FF",
-        rgb = Color.rgb(r = 0, g = 162, b = 255)
+        hex = "#e2603c",
+        rgb = Color.rgb(r=226, g=96, b=60)
     ),
     Secondary(
-        hex = "#001019",
-        rgb = Color.rgb(r = 0, g = 16, b = 25)
+        hex = "#000000",
+        rgb = Color.rgb(r = 0, g = 0, b = 0)
     ),
     Tertiary(
-        hex = "#001925",
-        rgb = Color.rgb(r = 0, g = 25, b = 37)
+        hex = "#F4F4FB",
+        rgb = Color.rgb(r = 244, g = 244, b = 251)
     ),
     LightGray(
         hex = "#FAFAFA",

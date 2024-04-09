@@ -156,7 +156,7 @@ fun SearchPage() {
                 breakpoint = breakpoint,
                 posts = searchPost,
                 onDetail = {
-                    context.router.navigateTo(Screen.PostPage.editPostId(it))
+                    context.router.navigateTo(Screen.PostPage.getPostId(it))
             }, showMore = {
                 scope.launch {
                     if (hasCategoryParam) {

@@ -33,6 +33,7 @@ import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.color
+import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
@@ -72,56 +73,62 @@ fun PostPage() {
 
     LaunchedEffect(context.route) {
         showSections = if (context.route.params.containsKey(SHOW_SECTIONS_PARAM)) {
-            (context.route.params[SHOW_SECTIONS_PARAM] ?: "false").toBoolean()
+            (context.route.params[SHOW_SECTIONS_PARAM] ?: "true").toBoolean()
         } else {
-            false
+            true
         }
         if (hasParams) {
             apiResponse = getPostById(context.route.params[POST_ID_PARAM] ?: "")
         }
     }
 
-
-    if (overflowOpened) {
-        OverFlowSidePanel(
-            onMenuClose = { overflowOpened = false },
-            content = { CategoryNavigationItems(isVertical = true) }
-        )
-    }
-    if (showSections) {
-        HeaderSection(
-            breakpoint = breakpoint,
-            logo = Res.Image.logo,
-            onMenuOpen = { overflowOpened = true }
-        )
-    }
-    when (apiResponse) {
-        is ApiResponse.Success -> {
-            PostPageContent(
-                post = (apiResponse as ApiResponse.Success).data,
-                breakpoint = breakpoint
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        if (overflowOpened) {
+            OverFlowSidePanel(
+                onMenuClose = { overflowOpened = false },
+                content = { CategoryNavigationItems(isVertical = true) }
             )
-            scope.launch {
-                delay(50)
-                try {
-                    js("hljs.highlightAll()") as Unit
-                } catch (e: Exception) {
-                    println(e.message)
+        }
+        if (showSections) {
+            HeaderSection(
+                breakpoint = breakpoint,
+                logo = Res.Image.logo,
+                onMenuOpen = { overflowOpened = true }
+            )
+        }
+        when (apiResponse) {
+            is ApiResponse.Success -> {
+                PostPageContent(
+                    post = (apiResponse as ApiResponse.Success).data,
+                    breakpoint = breakpoint
+                )
+                scope.launch {
+                    delay(50)
+                    try {
+                        js("hljs.highlightAll()") as Unit
+                    } catch (e: Exception) {
+                        println(e.message)
+                    }
                 }
             }
-        }
 
-        is ApiResponse.Idle -> {
-            LoadingIndicator()
-        }
+            is ApiResponse.Idle -> {
+                LoadingIndicator()
+            }
 
-        is ApiResponse.Error -> {
-            ErrorView(message = (apiResponse as ApiResponse.Error).message)
+            is ApiResponse.Error -> {
+                ErrorView(message = (apiResponse as ApiResponse.Error).message)
+            }
+        }
+        if (showSections) {
+            FooterSection()
         }
     }
-    if (showSections) {
-        FooterSection()
-    }
+
 
 }
 

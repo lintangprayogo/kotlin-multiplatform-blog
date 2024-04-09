@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.lintang.multiplatform.models.PostWithoutDetails
+import com.lintang.multiplatform.style.MainPostPreviewStyle
 import com.lintang.multiplatform.style.PostPreviewStyle
 import com.lintang.multiplatform.util.Constants.FONT_FAMILY
 import com.lintang.multiplatform.util.parseDateString
@@ -74,7 +75,7 @@ fun PostPreview(
         Row(
             modifier = Modifier.thenIf(
                 condition = post.isMain,
-                other = PostPreviewStyle.toModifier()
+                other = MainPostPreviewStyle.toModifier()
             )
                 .thenIf(
                     condition = !post.isMain,
@@ -101,7 +102,7 @@ fun PostPreview(
             modifier = Modifier
                 .thenIf(
                     condition = post.isMain,
-                    other = PostPreviewStyle.toModifier()
+                    other = MainPostPreviewStyle.toModifier()
                 )
                 .thenIf(
                     condition = !post.isMain,
